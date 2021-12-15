@@ -35,3 +35,4 @@
 
 ft_containers
 containers_test/
+.build/
