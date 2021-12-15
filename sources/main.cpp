@@ -1,116 +1,86 @@
-#include <iostream>
-#include <string>
-#include <deque>
-#if 1 //CREATE A REAL STL EXAMPLE
-	#include <map>
-	#include <stack>
-	#include <vector>
-	namespace ft = std;
-#else
-	#include <map.hpp>
-	#include <stack.hpp>
-	#include <vector.hpp>
-#endif
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/07 16:10:48 by lucocozz          #+#    #+#             */
+/*   Updated: 2021/12/15 21:00:38 by lucocozz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include <stdlib.h>
+#include "vector.hpp"
+#include <vector>
+#include <algorithm>
 
-#define MAX_RAM 4294967296
-#define BUFFER_SIZE 4096
-struct Buffer
+int	main()
 {
-	int idx;
-	char buff[BUFFER_SIZE];
-};
-
-
-#define COUNT (MAX_RAM / (int)sizeof(Buffer))
-
-template<typename T>
-class MutantStack : public ft::stack<T>
-{
-public:
-	MutantStack() {}
-	MutantStack(const MutantStack<T>& src) { *this = src; }
-	MutantStack<T>& operator=(const MutantStack<T>& rhs) 
+	std::cout << "FT:" << std::endl;
 	{
-		this->c = rhs.c;
-		return *this;
-	}
-	~MutantStack() {}
+		ft::vector<int> vct(5);
+		ft::vector<int> vct2;
+		const int cut = 3;
 
-	typedef typename ft::stack<T>::container_type::iterator iterator;
+		for (unsigned long int i = 0; i < vct.size(); ++i)
+			vct[i] = i;
 
-	iterator begin() { return this->c.begin(); }
-	iterator end() { return this->c.end(); }
-};
+		vct2.insert(vct2.begin(), vct.begin(), vct.begin() + cut);
+		vct2.insert(vct2.begin(), vct.begin() + cut, vct.end());
+		vct2.insert(vct2.end(), vct.begin(), vct.begin() + cut);
 
-int main(int argc, char** argv) {
-	if (argc != 2)
-	{
-		std::cerr << "Usage: ./test seed" << std::endl;
-		std::cerr << "Provide a seed please" << std::endl;
-		std::cerr << "Count value:" << COUNT << std::endl;
-		return 1;
-	}
-	const int seed = atoi(argv[1]);
-	srand(seed);
+		vct2.insert(vct2.end(), 42);
 
-	ft::vector<std::string> vector_str;
-	ft::vector<int> vector_int;
-	ft::stack<int> stack_int;
-	ft::vector<Buffer> vector_buffer;
-	ft::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
-	ft::map<int, int> map_int;
+		ft::vector<int>::iterator	it = vct2.begin();
+		ft::vector<int>::iterator	ite = vct2.end();
 
-	for (int i = 0; i < COUNT; i++)
-	{
-		vector_buffer.push_back(Buffer());
-	}
+		std::cout << "before: ";
+		for (; it != ite; it++)
+			std::cout << *it << " ";
+		std::cout << std::endl;
 
-	for (int i = 0; i < COUNT; i++)
-	{
-		const int idx = rand() % COUNT;
-		vector_buffer[idx].idx = 5;
-	}
-	ft::vector<Buffer>().swap(vector_buffer);
+		vct2.insert(vct2.begin() + 5, 84);
 
-	try
-	{
-		for (int i = 0; i < COUNT; i++)
-		{
-			const int idx = rand() % COUNT;
-			vector_buffer.at(idx);
-			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
-		}
-	}
-	catch(const std::exception& e)
-	{
-		//NORMAL ! :P
-	}
-	
-	for (int i = 0; i < COUNT; ++i)
-	{
-		map_int.insert(ft::make_pair(rand(), rand()));
-	}
+		it = vct2.begin();
+		ite = vct2.end();
 
-	int sum = 0;
-	for (int i = 0; i < 10000; i++)
-	{
-		int access = rand();
-		sum += map_int[access];
+		std::cout << "after:  ";
+		for (; it != ite; it++)
+			std::cout << *it << " ";
+		std::cout << std::endl;
 	}
-	std::cout << "should be constant with the same seed: " << sum << std::endl;
+	std::cout << "\nSTD:" << std::endl;
+	{
+		std::vector<int> vct(5);
+		std::vector<int> vct2;
+		const int cut = 3;
 
-	{
-		ft::map<int, int> copy = map_int;
+		for (unsigned long int i = 0; i < vct.size(); ++i)
+			vct[i] = i;
+
+		vct2.insert(vct2.begin(), vct.begin(), vct.begin() + cut);
+		vct2.insert(vct2.begin(), vct.begin() + cut, vct.end());
+		vct2.insert(vct2.end(), vct.begin(), vct.begin() + cut);
+
+		vct2.insert(vct2.end(), 42);
+
+		std::vector<int>::iterator	it = vct2.begin();
+		std::vector<int>::iterator	ite = vct2.end();
+
+		std::cout << "before: ";
+		for (; it != ite; it++)
+			std::cout << *it << " ";
+		std::cout << std::endl;
+
+		vct2.insert(vct2.begin() + 5, 84);
+
+		it = vct2.begin();
+		ite = vct2.end();
+
+		std::cout << "after:  ";
+		for (; it != ite; it++)
+			std::cout << *it << " ";
+		std::cout << std::endl;
 	}
-	MutantStack<char> iterable_stack;
-	for (char letter = 'a'; letter <= 'z'; letter++)
-		iterable_stack.push(letter);
-	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
-	{
-		std::cout << *it;
-	}
-	std::cout << std::endl;
 	return (0);
 }

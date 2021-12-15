@@ -3,8 +3,8 @@ SRC := 	main.cpp			\
 
 MAKE = make
 # MAKEFLAGS += --ignore-errors
-CXX := clang++
-CXXFLAGS := -Wall -Wextra -Werror -std=c++98
+CXX := c++
+CXXFLAGS := -Wall -Wextra -Werror -MMD -std=c++98 -g3
 BUILD_DIR := .build
 INCLUDES_DIR := includes
 SOURCE_DIR := sources
