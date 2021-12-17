@@ -6,14 +6,14 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/06 20:05:00 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/16 23:45:50 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/12/17 18:16:14 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 # include <string>
 # include <stddef.h>
-# include "utils.hpp"
+# include "type_traits.hpp"
 
 namespace ft
 {
@@ -26,50 +26,173 @@ namespace ft
 		typedef T*								pointer;
 		typedef T&								reference;
 		typedef std::random_access_iterator_tag	iterator_category;
-		
+
 		pointer				current;
 
-		vector_iterator();
-		vector_iterator(pointer ptr);
-		vector_iterator(const vector_iterator<T> &copy);
-		~vector_iterator();
-		vector_iterator<T>	&operator=(const vector_iterator<T> &copy);
-		reference			operator*(void) const;
-		pointer				operator->(void) const;
-		reference			operator[](int index);
-		vector_iterator<T>	operator++(int);
-		vector_iterator<T>	&operator++(void);
-		vector_iterator<T>	operator--(int);
-		vector_iterator<T>	&operator--(void);
-		vector_iterator<T>	&operator+=(int value);
-		vector_iterator<T>	operator+(int value);
-		vector_iterator<T>	&operator-=(int value);
-		vector_iterator<T>	operator-(int value);
-		difference_type		operator-(const vector_iterator<T> &object) const;
+		vector_iterator(): current(NULL) {}
 
-		operator ft::vector_iterator<const T>() const {
-			return (ft::vector_iterator<const T>(this->current));
+		vector_iterator(pointer ptr): current(ptr) {}
+
+		vector_iterator(const vector_iterator<T> &copy)
+		{
+			*this = copy;
+		}
+
+		~vector_iterator() {}
+
+
+
+
+		vector_iterator<T>	&operator=(const vector_iterator<T> &copy)
+		{
+			if (this != &copy)
+				this->current = copy.current;
+			return (*this);
+		}
+
+		reference	operator*(void) const
+		{
+			return (*this->current);
+		}
+
+		pointer	operator->(void) const
+		{
+			return (this->current);
+		}
+
+		reference	operator[](int index)
+		{
+			return (this->current[index]);
+		}
+
+		vector_iterator<T>	operator++(int)
+		{
+			vector_iterator<T>	tmp(*this);
+		
+			this->current++;
+			return (tmp);
+		}
+
+		vector_iterator<T>	&operator++(void)
+		{
+			this->current++;
+			return (*this);
+		}
+
+		vector_iterator<T>	operator--(int)
+		{
+			vector_iterator<T>	tmp(*this);
+		
+			this->current--;
+			return (tmp);
+		}
+
+		vector_iterator<T>	&operator--(void)
+		{
+			this->current--;
+			return (*this);
+		}
+
+		vector_iterator<T>	&operator+=(int value)
+		{
+			this->current += value;
+			return (*this);
+		}
+
+		vector_iterator<T>	operator+(int value)
+		{
+			vector_iterator<T>	tmp(this->current + value);
+
+			return (tmp);
+		}
+
+		vector_iterator<T>	&operator-=(int value)
+		{
+			this->current -= value;
+			return (*this);
+		}
+
+		vector_iterator<T>	operator-(int value)
+		{
+			vector_iterator<T>	tmp(this->current - value);
+		
+			return (tmp);
+		}
+
+		ptrdiff_t		operator-(const vector_iterator<T> &object) const
+		{
+			return (this->current - object.current);
+		}
+
+		operator vector_iterator<const T>() const {
+			return (vector_iterator<const T>(this->current));
 		}
 	};
 
+	
+
+
 	template<class Tx, class Ty>
-		bool	operator==(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y);
+	bool	operator==(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y)
+	{
+		if (x.current == y.current)
+			return (true);
+		return (false);
+	}
+
 	template<class Tx, class Ty>
-		bool	operator!=(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y);
+	bool	operator!=(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y)
+	{
+		if (x.current != y.current)
+			return (true);
+		return (false);
+	}
+
 	template<class Tx, class Ty>
-		bool	operator<=(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y);
+	bool	operator>=(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y)
+	{
+		if (x.current >= y.current)
+			return (true);
+		return (false);
+	}
+
 	template<class Tx, class Ty>
-		bool	operator>=(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y);
+	bool	operator<=(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y)
+	{
+		if (x.current <= y.current)
+			return (true);
+		return (false);
+	}
+
 	template<class Tx, class Ty>
-		bool	operator>(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y);
+	bool	operator<(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y)
+	{
+		if (x.current < y.current)
+			return (true);
+		return (false);
+	}
+
 	template<class Tx, class Ty>
-		bool	operator<(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y);
+	bool	operator>(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y)
+	{
+		if (x.current > y.current)
+			return (true);
+		return (false);
+	}
+
+}
+
+
+
+
+template<class T>
+ft::vector_iterator<T>	operator+(int value, const ft::vector_iterator<T> &object)
+{
+	return (object.current + value);	
 }
 
 template<class T>
-	ft::vector_iterator<T>	operator+(int value, const ft::vector_iterator<T> &object);
-template<class T>
-	ft::vector_iterator<T>	operator-(int value, const ft::vector_iterator<T> &object);
-
-
-# include "vectorIterator.ipp"
+ft::vector_iterator<T>	operator-(int value, const ft::vector_iterator<T> &object)
+{
+	return (object.current - value);	
+}
