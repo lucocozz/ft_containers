@@ -6,13 +6,14 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/06 20:05:00 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/10 16:24:20 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/12/16 23:45:50 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 # include <string>
 # include <stddef.h>
+# include "utils.hpp"
 
 namespace ft
 {
@@ -29,7 +30,7 @@ namespace ft
 		pointer				current;
 
 		vector_iterator();
-		vector_iterator(T *ptr);
+		vector_iterator(pointer ptr);
 		vector_iterator(const vector_iterator<T> &copy);
 		~vector_iterator();
 		vector_iterator<T>	&operator=(const vector_iterator<T> &copy);

@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 15:41:16 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/14 20:36:24 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/12/17 01:08:06 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stddef.h>
 # include "reverseIterator.hpp"
 # include "vectorIterator.hpp"
+# include "utils.hpp"
 
 namespace ft
 {
@@ -49,11 +50,13 @@ namespace ft
 		//* constructor/copy/destructor
 		explicit vector(const Allocator& = Allocator());
 		explicit vector(size_type n, const T &value = T(), const Allocator& = Allocator());
-		vector(iterator first, iterator last, const Allocator& = Allocator());
+		template<class InputIterator>
+			ft::enable_if<!std::is_integral<InputIterator>, void>::type vector(InputIterator first, InputIterator last, const Allocator& = Allocator());
 		vector(const vector<T, Allocator> &x);
 		~vector();
 		vector<T, Allocator>	&operator=(const vector<T, Allocator> &x);
-		void					assign(iterator first, iterator last);
+		template<class InputIterator>
+			ft::enable_if<!std::is_integral<InputIterator>, void>::type assign(InputIterator first, InputIterator last);
 		void					assign(size_type n, const T &u);
 		allocator_type			get_allocator() const;
 
@@ -90,7 +93,8 @@ namespace ft
 		void					pop_back();
 		iterator				insert(iterator position, const T &x);
 		void					insert(iterator position, size_type n, const T &x);
-		void					insert(iterator position, iterator first, iterator last);
+		template<class InputIterator>
+			ft::enable_if<!std::is_integral<InputIterator>, void>::type	insert(iterator position, InputIterator first, InputIterator last);
 		iterator				erase(iterator position);
 		iterator				erase(iterator first, iterator last);
 		void					swap(vector<T, Allocator> &x);

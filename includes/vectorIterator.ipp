@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/06 20:05:00 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/10 21:47:10 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/12/16 01:12:01 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@ template<class T>
 ft::vector_iterator<T>::vector_iterator(): current(NULL) {}
 
 template<class T>
-ft::vector_iterator<T>::vector_iterator(T *ptr): current(ptr) {}
+ft::vector_iterator<T>::vector_iterator(pointer ptr): current(ptr) {}
 
 template<class T>
 ft::vector_iterator<T>::vector_iterator(const vector_iterator<T> &copy)

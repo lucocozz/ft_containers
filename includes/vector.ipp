@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 15:41:46 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/15 21:22:15 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/12/17 01:14:58 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ ft::vector<T, Allocator>::vector(size_type n, const T &value, const Allocator&):
 }
 
 template<class T, class Allocator>
-ft::vector<T, Allocator>::vector(iterator first, iterator last, const Allocator&): _capacity(0), _size(0), _data(NULL)
+template<class InputIterator>
+ft::enable_if<!std::is_integral<InputIterator>, void>::type ft::vector<T, Allocator>::vector(InputIterator first, InputIterator last, const Allocator&): _capacity(0), _size(0), _data(NULL)
 {
 	this->assign(first, last);
 }
@@ -51,7 +52,8 @@ ft::vector<T, Allocator>	&ft::vector<T, Allocator>::operator=(const ft::vector<T
 }
 
 template<class T, class Allocator>
-void	ft::vector<T, Allocator>::assign(iterator first, iterator last)
+template<class InputIterator>
+ft::enable_if<!std::is_integral<InputIterator>, void>::type	ft::vector<T, Allocator>::assign(InputIterator first, InputIterator last)
 {
 	this->clear();
 	this->insert(this->begin(), first, last);
@@ -288,7 +290,8 @@ void	ft::vector<T, Allocator>::insert(iterator position, size_type n, const T &x
 }
 
 template<class T, class Allocator>
-void	ft::vector<T, Allocator>::insert(iterator position, iterator first, iterator last)
+template<class InputIterator>
+ft::enable_if<!std::is_integral<InputIterator>, void>::type	ft::vector<T, Allocator>::insert(iterator position, InputIterator first, InputIterator last)
 {
 	iterator		pos;
 	iterator		oldEnd;
