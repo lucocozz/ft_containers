@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 15:41:16 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/17 18:30:49 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/12/19 23:03:39 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "reverseIterator.hpp"
 # include "vectorIterator.hpp"
 # include "type_traits.hpp"
+# include "algorithm.hpp"
 
 namespace ft
 {
@@ -111,42 +112,42 @@ namespace ft
 		//* iterators
 		iterator	begin()
 		{
-			return (this->_data);
+			return (iterator(this->_data));
 		}
 
 		const_iterator	begin() const
 		{
-			return (this->_data);
+			return (const_iterator(this->_data));
 		}
 
 		iterator	end()
 		{
-			return (&this->_data[this->_size]);
+			return (iterator(&this->_data[this->_size]));
 		}
 
 		const_iterator	end() const
 		{
-			return (&this->_data[this->_size]);
+			return (const_iterator(&this->_data[this->_size]));
 		}
 
 		reverse_iterator	rbegin()
 		{
-			return (&this->_data[this->_size]);
+			return (reverse_iterator(&this->_data[this->_size - 1]));
 		}
 
 		const_reverse_iterator	rbegin() const
 		{
-			return (&this->_data[this->_size]);
+			return (const_reverse_iterator(&this->_data[this->_size - 1]));
 		}
 
 		reverse_iterator	rend()
 		{
-			return (this->_data);
+			return (reverse_iterator(this->_data - 1));
 		}
 
 		const_reverse_iterator	rend() const
 		{
-			return (this->_data);
+			return (const_reverse_iterator(this->_data - 1));
 		}
 
 
@@ -355,12 +356,6 @@ namespace ft
 		{
 			erase(this->begin(), this->end());
 		}
-		
-		bool	operator==(const vector<T> &object) const
-		{
-			(void)object;
-			return (true);
-		}
 	};
 
 
@@ -369,41 +364,51 @@ namespace ft
 
 
 	//* operator
-	template<class T>
-	bool	operator!=(const vector<T> &x, const vector<T> &y)
+	template<class T, class Alloc>
+	bool operator==(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
 	{
-		(void)(x && y);
+		typename ft::vector<T>::const_iterator	itl = lhs.begin();
+		typename ft::vector<T>::const_iterator	itr = rhs.begin();
+
+		if (lhs.size() != rhs.size())
+			return (false);
+		for (; (itl != lhs.end()) && (itr != rhs.end()); itl++, itr++)
+			if (itl != itr)
+				return (false);
 		return (true);
 	}
 
-	template<class T>
-	bool	operator<(const vector<T> &x, const vector<T> &y)
+	template<class T, class Alloc>
+	bool operator!=(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
 	{
-		(void)(x && y);
+		if (lhs == rhs)
+			return (false);
 		return (true);
 	}
 
-	template<class T>
-	bool	operator>(const vector<T> &x, const vector<T> &y)
+	template<class T, class Alloc>
+	bool operator<(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
 	{
-		(void)(x && y);
-		return (true);
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 
-	template<class T>
-	bool	operator<=(const vector<T> &x, const vector<T> &y)
+	template<class T, class Alloc>
+	bool operator<=(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
 	{
-		(void)(x && y);
-		return (true);
+		return (!(rhs < lhs));
 	}
 
-	template<class T>
-	bool	operator>=(const vector<T> &x, const vector<T> &y)
+	template<class T, class Alloc>
+	bool operator>(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
 	{
-		(void)(x && y);
-		return (true);
+		return (rhs < lhs);
 	}
 
+	template<class T, class Alloc>
+	bool operator>=(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
+	{
+		return (!(lhs < rhs));
+	}
 
 
 

@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/06 20:05:00 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/17 18:16:14 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/12/19 22:35:12 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ namespace ft
 			return (tmp);
 		}
 
-		ptrdiff_t		operator-(const vector_iterator<T> &object) const
+		difference_type		operator-(const vector_iterator<T> &object) const
 		{
 			return (this->current - object.current);
 		}
@@ -179,7 +179,6 @@ namespace ft
 			return (true);
 		return (false);
 	}
-
 }
 
 
