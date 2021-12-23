@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 00:58:27 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/19 21:40:17 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/12/22 19:36:26 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,13 @@
 
 namespace ft
 {
+	struct input_iterator_tag {};
+	struct output_iterator_tag {};
+	struct forward_iterator_tag: public input_iterator_tag {};
+	struct bidirectional_iterator_tag: public forward_iterator_tag {};
+	struct random_access_iterator_tag: public bidirectional_iterator_tag {};
+
+
 	template<class Iter>
 	struct iterator_traits
 	{
@@ -31,7 +38,7 @@ namespace ft
 		typedef T									value_type;
 		typedef T*									pointer;
 		typedef T&									reference;
-		typedef std::random_access_iterator_tag		iterator_category;
+		typedef ft::random_access_iterator_tag		iterator_category;
 	};
 	
 	template<class T>
@@ -41,9 +48,20 @@ namespace ft
 		typedef T									value_type;
 		typedef const T*							pointer;
 		typedef const T&							reference;
-		typedef std::random_access_iterator_tag		iterator_category;
+		typedef ft::random_access_iterator_tag		iterator_category;
 	};
 
+
+	template<class InputIt>
+	typename iterator_traits<InputIt>::difference_type distance(InputIt first, InputIt last)
+	{
+		typename iterator_traits<InputIt>::difference_type	dist;
+
+		dist = 0;
+		while (first != last)
+			first++, dist++;
+		return (dist);
+	}
 
 
 	template<bool B, class T = void>

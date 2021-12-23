@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 16:10:48 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/19 20:26:45 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/12/20 08:42:03 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int	main()
 	std::cout << "(it == const_it): " << (ite == it) << std::endl;
 	std::cout << "(const_ite - it): " << (ite - it) << std::endl;
 	std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
+
 	return (0);
 }
 

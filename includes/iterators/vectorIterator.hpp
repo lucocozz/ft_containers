@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/06 20:05:00 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/19 22:35:12 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/12/23 01:45:43 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 namespace ft
 {
-	template <class T>
+	template<class T>
 	class vector_iterator
 	{
 	public:
@@ -25,10 +25,11 @@ namespace ft
 		typedef ptrdiff_t						difference_type;
 		typedef T*								pointer;
 		typedef T&								reference;
-		typedef std::random_access_iterator_tag	iterator_category;
+		typedef ft::random_access_iterator_tag	iterator_category;
 
-		pointer				current;
+		pointer			current;
 
+	public:
 		vector_iterator(): current(NULL) {}
 
 		vector_iterator(pointer ptr): current(ptr) {}
@@ -93,26 +94,26 @@ namespace ft
 			return (*this);
 		}
 
-		vector_iterator<T>	&operator+=(int value)
+		vector_iterator<T>	&operator+=(difference_type value)
 		{
 			this->current += value;
 			return (*this);
 		}
 
-		vector_iterator<T>	operator+(int value)
+		vector_iterator<T>	operator+(difference_type value)
 		{
 			vector_iterator<T>	tmp(this->current + value);
 
 			return (tmp);
 		}
 
-		vector_iterator<T>	&operator-=(int value)
+		vector_iterator<T>	&operator-=(difference_type value)
 		{
 			this->current -= value;
 			return (*this);
 		}
 
-		vector_iterator<T>	operator-(int value)
+		vector_iterator<T>	operator-(difference_type value)
 		{
 			vector_iterator<T>	tmp(this->current - value);
 		
@@ -122,6 +123,11 @@ namespace ft
 		difference_type		operator-(const vector_iterator<T> &object) const
 		{
 			return (this->current - object.current);
+		}
+
+		difference_type		operator+(const vector_iterator<T> &object) const
+		{
+			return (this->current + object.current);
 		}
 
 		operator vector_iterator<const T>() const {

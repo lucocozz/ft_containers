@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 15:41:16 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/19 23:03:39 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/12/23 01:45:31 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,7 @@
 # include <string>
 # include <limits>
 # include <stddef.h>
-# include "reverseIterator.hpp"
-# include "vectorIterator.hpp"
-# include "type_traits.hpp"
+# include "iterator.hpp"
 # include "algorithm.hpp"
 
 namespace ft
@@ -49,22 +47,25 @@ namespace ft
 		allocator_type	_alloc;
 
 	public:
-		//* constructor/copy/destructor
+		//* constructor/copy/destructor:
 		explicit vector(const Allocator& = Allocator()): _capacity(0), _size(0), _data(NULL) {}
 
-		explicit vector(size_type n, const T &value = T(), const Allocator& = Allocator()): _capacity(0), _size(0), _data(NULL)
+		explicit vector(size_type n, const T &value = T(), const Allocator& = Allocator()):
+			_capacity(0), _size(0), _data(NULL)
 		{
 			this->assign(n, value);
 		}
 
 		template<class InputIterator>
 		vector(InputIterator first, InputIterator last, const Allocator& = Allocator(),
-		typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = NULL): _capacity(0), _size(0), _data(NULL)
+		typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = NULL):
+			_capacity(0), _size(0), _data(NULL)
 		{
 			this->assign(first, last);
 		}
 
-		vector(const vector<T> &x): _capacity(0), _size(0), _data(NULL)
+		vector(const vector &x):
+			_capacity(0), _size(0), _data(NULL)
 		{
 			*this = x;
 		}
@@ -78,7 +79,7 @@ namespace ft
 			}
 		}
 
-		vector<T>	&operator=(const vector<T> &x)
+		vector	&operator=(const vector &x)
 		{
 			if (this != &x)
 				this->assign(x.begin(), x.end());
@@ -109,7 +110,7 @@ namespace ft
 
 
 
-		//* iterators
+		//* iterators:
 		iterator	begin()
 		{
 			return (iterator(this->_data));
@@ -132,22 +133,22 @@ namespace ft
 
 		reverse_iterator	rbegin()
 		{
-			return (reverse_iterator(&this->_data[this->_size - 1]));
+			return (reverse_iterator(&this->_data[this->_size]));
 		}
 
 		const_reverse_iterator	rbegin() const
 		{
-			return (const_reverse_iterator(&this->_data[this->_size - 1]));
+			return (const_reverse_iterator(&this->_data[this->_size]));
 		}
 
 		reverse_iterator	rend()
 		{
-			return (reverse_iterator(this->_data - 1));
+			return (reverse_iterator(this->_data));
 		}
 
 		const_reverse_iterator	rend() const
 		{
-			return (const_reverse_iterator(this->_data - 1));
+			return (const_reverse_iterator(this->_data));
 		}
 
 
@@ -155,7 +156,7 @@ namespace ft
 
 
 
-		//* capacity
+		//* capacity:
 		size_type	size() const
 		{
 			return	(this->_size);
@@ -211,7 +212,7 @@ namespace ft
 
 
 
-		//* element access
+		//* element access:
 		reference	operator[](size_type n)
 		{
 			return (this->_data[n]);
@@ -267,7 +268,7 @@ namespace ft
 
 
 
-		//* modifiers
+		//* modifiers:
 		void	push_back(const T &x)
 		{
 			if (this->size() == this->capacity())
@@ -312,15 +313,16 @@ namespace ft
 			iterator		pos;
 			iterator		oldEnd;
 			difference_type	index = position - this->begin();
+			difference_type	size = ft::distance(first, last);
 		
-			this->reserve(this->size() + (last - first));
+			this->reserve(this->size() + size);
 			oldEnd = this->end();
-			this->_size = this->size() + (last - first);
+			this->_size = this->size() + size;
 			pos = iterator(&this->_data[index]);
 			if (pos != oldEnd)
 				for (int i = 0; this->end() - i != pos; i++)
 					this->_alloc.construct(&(*(this->end() - i - 1)), *(oldEnd - i - 1));
-			for (; first < last; first++, pos++)
+			for (; first != last; first++, pos++)
 				this->_alloc.construct(&(*pos), *first);
 		}
 
@@ -345,7 +347,7 @@ namespace ft
 			return (first);
 		}
 
-		void	swap(vector<T> &x)
+		void	swap(vector &x)
 		{
 			std::swap(this->_capacity, x._capacity);
 			std::swap(this->_data, x._data);
@@ -363,19 +365,13 @@ namespace ft
 
 
 
-	//* operator
+	//* operator:
 	template<class T, class Alloc>
 	bool operator==(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
 	{
-		typename ft::vector<T>::const_iterator	itl = lhs.begin();
-		typename ft::vector<T>::const_iterator	itr = rhs.begin();
-
 		if (lhs.size() != rhs.size())
 			return (false);
-		for (; (itl != lhs.end()) && (itr != rhs.end()); itl++, itr++)
-			if (itl != itr)
-				return (false);
-		return (true);
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 
 	template<class T, class Alloc>
@@ -412,7 +408,7 @@ namespace ft
 
 
 
-	//* specialized algorithms
+	//* specialized algorithms:
 	template<class T>
 	void	swap(vector<T> &x, vector<T> &y)
 	{
