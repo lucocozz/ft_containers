@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/31 11:24:17 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/01 14:15:45 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/01 15:51:39 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,8 @@ namespace ft
 	template<class Tx, class Ty>
 	bool	operator!=(const RedBlackTree_iterator<Tx> &x, const RedBlackTree_iterator<Ty> &y)
 	{
-		if (x.current == y.current)
-			return (false);
-		return (true);
+		if (x.current != y.current)
+			return (true);
+		return (false);
 	}
 }

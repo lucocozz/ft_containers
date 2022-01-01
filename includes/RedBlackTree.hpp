@@ -6,13 +6,15 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/01 15:45:38 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/01 22:16:32 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 # include <memory>
 # include "utility.hpp"
+
+# define SPACE 5
 
 namespace ft
 {
@@ -73,14 +75,14 @@ namespace ft
 	public:
 		RedBlackTree(): _alloc(allocator_type()), _comp(key_compare()), _size(0)
 		{
-			this->_sentry = this->_allocNode(value_type(), NULL, NULL);
+			this->_sentry = this->_allocNode(value_type(), NULL, NULL, Black);
 			this->_root = this->_sentry;
 		}
 
 		explicit RedBlackTree(const Compare	&comp, const Allocator &alloc = Allocator()):
 			_alloc(alloc), _comp(comp), _size(0)
 		{
-			this->_sentry = this->_allocNode(value_type(), NULL, NULL);
+			this->_sentry = this->_allocNode(value_type(), NULL, NULL, Black);
 			this->_root = this->_sentry;
 		}
 
@@ -129,21 +131,27 @@ namespace ft
 
 
 
-		iterator	search(const pointer tree, const value_type &x)
+		iterator	search(const pointer node, const value_type &x)
 		{
-			if (tree == this->_sentry || x == tree->data)
-				return (tree);
-			else if (this->_comp(x, tree->data))
-				return (this->search(tree->left, x));
-			else
-				return (this->search(tree->right, x));
+			pointer	current = node;
+
+			while (current != this->sentry())
+			{
+				if (this->_comp(x, current->data))
+					current = current->left;
+				else if (this->_comp(current->data, x))
+					current = current->right;
+				else
+					return (current);
+			}
+			return (this->end());
 		}
 
 		void	insert(const value_type &x)
 		{
 			pointer	parent = NULL;
-			pointer	current = this->_root;
-			pointer	node = this->_allocNode(x, this->_sentry, this->_sentry);
+			pointer	current = this->root();
+			pointer	node = this->_allocNode(x, this->_sentry, this->_sentry, Red);
 
 			this->_size++;
 			while (current != this->_sentry)
@@ -178,12 +186,12 @@ namespace ft
 
 		iterator	end()
 		{
-			return (this->_sentry);
+			return (this->sentry());
 		}
 
 		const_iterator	end() const
 		{
-			return (this->_sentry);
+			return (this->sentry());
 		}
 
 
@@ -192,11 +200,7 @@ namespace ft
 
 		void	print(pointer node) const
 		{
-			if (node == this->_sentry)
-				return;
-			print(node->left);
-			std::cout << node->data << " ";
-			print(node->right);
+			this->_print(node, 0);
 		}
 
 
@@ -205,15 +209,14 @@ namespace ft
 
 
 	private:
-		pointer	_allocNode(const value_type &x, pointer left, pointer right)
+		pointer	_allocNode(const value_type &x, pointer left, pointer right, node_color color)
 		{
 			pointer	node = this->_alloc.allocate(1);
 
-			node->data = x;
+			this->_alloc.construct(node, x);
 			node->left = left;
 			node->right = right;
-			node->parent = NULL;
-			node->color = Red;
+			node->color = color;
 			return (node);
 		}
 
@@ -267,7 +270,7 @@ namespace ft
 						this->_rightRotate(node->parent->parent);
 					}
 				}
-				if (node == this->_root)
+				if (node == this->root())
 					break;
 			}
 			this->_root->color = Black;
@@ -278,7 +281,7 @@ namespace ft
 			pointer	child = node->right;
 
 			node->right = child->left;
-			if (child->left != this->_sentry)
+			if (child->left != this->sentry())
 				child->left->parent = node;
 			child->parent = node->parent;
 			if (node->parent == NULL)
@@ -307,6 +310,18 @@ namespace ft
 				node->parent->left = child;
 			child->right = node;
 			node->parent = child;
+		}
+
+		void	_print(pointer node, int space) const
+		{
+			if (node == this->_sentry)
+				return;
+			space += SPACE;
+			this->_print(node->right, space);
+			if (node->color == Red)
+				std::cout << "\033[31m";
+			std::cout << std::string(space, ' ') << node->data << "\033[0m" << std::endl;
+			this->_print(node->left, space);
 		}
 	};
 } // namespace ft

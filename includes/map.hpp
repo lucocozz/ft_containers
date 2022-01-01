@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 10:38:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/01 15:45:59 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/01 21:35:54 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ namespace ft
 
 		~map()
 		{
-			
+			this->_tree.print(this->_tree.root());
 		}
 
 		map	&operator=(const map &other)
@@ -212,8 +212,6 @@ namespace ft
 
 			if (it == this->_tree.end())
 				this->_tree.insert(x);
-			this->_tree.print(this->_tree.root());
-			std::cout << std::endl;
 			return (x);
 		}
 
@@ -241,7 +239,8 @@ namespace ft
 
 		void	swap(map &x)
 		{
-
+			std::swap(this->_tree, x._tree);
+			std::swap(this->_comp, x._comp);
 		}
 
 		void	clear()

@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 11:23:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/01 15:43:26 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/01 20:08:24 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ namespace ft
 		{
 			if (this != &other)
 			{
-				// this->first = other.first;
+				this->first = other.first;
 				this->second = other.second;
 			}
 			return (*this);
