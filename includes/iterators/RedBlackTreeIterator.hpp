@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mapIterator.hpp                                    :+:      :+:    :+:   */
+/*   RedBlackTreeIterator.hpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/20 10:40:08 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/22 19:57:58 by lucocozz         ###   ########.fr       */
+/*   Created: 2021/12/31 11:24:17 by lucocozz          #+#    #+#             */
+/*   Updated: 2022/01/01 14:15:45 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 namespace ft
 {
 	template<class T>
-	class map_iterator
+	class RedBlackTree_iterator
 	{
 	public:
 		typedef T								value_type;
@@ -28,23 +28,23 @@ namespace ft
 		typedef ft::bidirectional_iterator_tag	iterator_category;
 
 
-		pointer			current;
+		pointer		current;
 
 
-		map_iterator(): current(NULL) {}
+		RedBlackTree_iterator(): current(NULL) {}
 
-		map_iterator(pointer ptr): current(ptr) {}
+		RedBlackTree_iterator(pointer ptr): current(ptr) {}
 
-		map_iterator(const map_iterator<T> &copy)
+		RedBlackTree_iterator(const RedBlackTree_iterator &copy)
 		{
 			*this = copy;
 		}
 
-		~map_iterator() {}
+		~RedBlackTree_iterator() {}
 
 
 
-		map_iterator<T>	&operator=(const map_iterator<T> &other)
+		RedBlackTree_iterator	&operator=(const RedBlackTree_iterator &other)
 		{
 			if (this != &other)
 				this->current = other.current;
@@ -61,34 +61,38 @@ namespace ft
 			return (this->current);
 		}
 
-		map_iterator<T>	operator++(int)
+		RedBlackTree_iterator	operator++(int)
 		{
 			//! implement post-increment
-			return (map_iterator());
+			return (RedBlackTree_iterator());
 		}
 
-		map_iterator<T>	&operator++(void)
+		RedBlackTree_iterator	&operator++(void)
 		{
 			//! implement pre-increment
 			return (*this);
 		}
 
-		map_iterator<T>	operator--(int)
+		RedBlackTree_iterator	operator--(int)
 		{
 			//! implement post-decrement
-			return (map_iterator());
+			return (RedBlackTree_iterator());
 		}
 
-		map_iterator<T>	&operator--(void)
+		RedBlackTree_iterator	&operator--(void)
 		{
 			//! implement pre-decrement
 			return (*this);
+		}
+
+		operator RedBlackTree_iterator<const T>() const {
+			return (RedBlackTree_iterator<const T>(this->current));
 		}
 	};
 
 
 	template<class Tx, class Ty>
-	bool	operator==(const map_iterator<Tx> &x, const map_iterator<Ty> &y)
+	bool	operator==(const RedBlackTree_iterator<Tx> &x, const RedBlackTree_iterator<Ty> &y)
 	{
 		if (x.current == y.current)
 			return (true);
@@ -96,10 +100,10 @@ namespace ft
 	}
 
 	template<class Tx, class Ty>
-	bool	operator!=(const map_iterator<Tx> &x, const map_iterator<Ty> &y)
+	bool	operator!=(const RedBlackTree_iterator<Tx> &x, const RedBlackTree_iterator<Ty> &y)
 	{
-		if (x.current != y.current)
-			return (true);
-		return (false);
+		if (x.current == y.current)
+			return (false);
+		return (true);
 	}
 }

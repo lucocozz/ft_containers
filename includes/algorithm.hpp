@@ -6,9 +6,11 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/19 22:11:17 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/20 10:37:59 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/12/26 23:31:50 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#pragma once
 
 namespace ft
 {
