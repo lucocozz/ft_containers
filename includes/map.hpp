@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 10:38:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/01 21:35:54 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/02 11:22:28 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ namespace ft
 			if (this != &other)
 			{
 				this->_comp = other._comp;
-				this->_alloc = other._alloc;
 				this->_tree = other._tree;
 			}
 			return (*this);
@@ -185,9 +184,9 @@ namespace ft
 
 		mapped_type	&at(const Key &key)
 		{
-			iterator it = this->find(key);
+			iterator	it = this->find(key);
 
-			if (it == this->_tree.end())
+			if (it == this->end())
 				throw (std::out_of_range("map::at"));
 			else
 				return (*it);
@@ -195,22 +194,18 @@ namespace ft
 
 		const mapped_type	&at(const Key &key) const
 		{
-			iterator it = this->find(key);
+			iterator	it = this->find(key);
 
-			if (it == this->_tree.end())
+			if (it == this->end())
 				throw (std::out_of_range("map::at"));
 			else
 				return (*it);
 		}
 
-
-
 		//*	modifiers:
 		value_type	insert(const value_type &x)
 		{
-			iterator	it = this->find(x.first);
-
-			if (it == this->_tree.end())
+			if (this->count(x.first) == 0)
 				this->_tree.insert(x);
 			return (x);
 		}
@@ -270,19 +265,23 @@ namespace ft
 
 
 		//*	map operations:
-		iterator	find(const key_type &x)
+		iterator	find(const key_type &key)
 		{
-			return (this->_tree.search(this->_tree.root(), ft::make_pair(x, mapped_type())));
+			return (this->_tree.search(ft::make_pair(key, mapped_type())));
 		}
 
-		const_iterator	find(const key_type &x) const
+		const_iterator	find(const key_type &key) const
 		{
-			return (this->_tree.search(this->_tree.root(), ft::make_pair(x, mapped_type())));
+			return (this->_tree.search(ft::make_pair(key, mapped_type())));
 		}
 
-		size_type	count(const key_type &x) const
+		size_type	count(const key_type &key) const
 		{
-			return (this->size());
+			const_iterator	it = this->find(key);
+
+			if (it == this->end())
+				return (0);
+			return (1);
 		}
 
 

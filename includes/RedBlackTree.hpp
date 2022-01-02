@@ -6,15 +6,13 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/01 22:16:32 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/02 20:52:44 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 # include <memory>
 # include "utility.hpp"
-
-# define SPACE 5
 
 namespace ft
 {
@@ -36,14 +34,6 @@ namespace ft
 
 		~Node() {}
 	};
-
-	template<class Tx, class Ty>
-	bool	operator==(const Node<Tx> &x, const Node<Ty> &y)
-	{
-		if (&x == &y)
-			return (true);
-		return (false);
-	}
 
 
 
@@ -130,31 +120,24 @@ namespace ft
 
 
 
-
-		iterator	search(const pointer node, const value_type &x)
+		iterator	search(const value_type &x)
 		{
-			pointer	current = node;
+			return (this->_search(this->root(), x));
+		}
 
-			while (current != this->sentry())
-			{
-				if (this->_comp(x, current->data))
-					current = current->left;
-				else if (this->_comp(current->data, x))
-					current = current->right;
-				else
-					return (current);
-			}
-			return (this->end());
+		const_iterator	search(const value_type &x) const
+		{
+			return (this->_search(this->root(), x));
 		}
 
 		void	insert(const value_type &x)
 		{
 			pointer	parent = NULL;
 			pointer	current = this->root();
-			pointer	node = this->_allocNode(x, this->_sentry, this->_sentry, Red);
+			pointer	node = this->_allocNode(x, this->sentry(), this->sentry(), Red);
 
 			this->_size++;
-			while (current != this->_sentry)
+			while (current != this->sentry())
 			{
 				parent = current;
 				if (this->_comp(node->data, current->data))
@@ -198,9 +181,12 @@ namespace ft
 
 
 
-		void	print(pointer node) const
+		void	print(pointer node)
 		{
-			this->_print(node, 0);
+			std::stringstream	buffer;
+
+			this->_print(node, buffer, true, "");
+			std::cout << buffer.str();
 		}
 
 
@@ -299,7 +285,7 @@ namespace ft
 			pointer	child = node->left;
 
 			node->left = child->right;
-			if (child->right != this->_sentry)
+			if (child->right != this->sentry())
 				child->right->parent = node;
 			child->parent = node->parent;
 			if (node->parent == NULL)
@@ -312,16 +298,53 @@ namespace ft
 			node->parent = child;
 		}
 
-		void	_print(pointer node, int space) const
+		iterator	_search(const pointer node, const value_type &x)
 		{
-			if (node == this->_sentry)
-				return;
-			space += SPACE;
-			this->_print(node->right, space);
+			pointer	current = node;
+
+			while (current != this->sentry())
+			{
+				if (this->_comp(x, current->data))
+					current = current->left;
+				else if (this->_comp(current->data, x))
+					current = current->right;
+				else
+					return (current);
+			}
+			return (this->end());
+		}
+
+		const_iterator	_search(const pointer node, const value_type &x) const
+		{
+			pointer	current = node;
+
+			while (current != this->sentry())
+			{
+				if (this->_comp(x, current->data))
+					current = current->left;
+				else if (this->_comp(current->data, x))
+					current = current->right;
+				else
+					return (current);
+			}
+			return (this->end());
+		}
+
+
+
+
+
+
+		void	_print(pointer node, std::stringstream &buffer, bool isTail, std::string prefix)
+		{
+			if (node->right != this->sentry())
+				this->_print(node->right, buffer, false, std::string(prefix).append(isTail ? "│   " : "    "));
+			buffer << prefix << (isTail ? "└── " : "┌── ");
 			if (node->color == Red)
-				std::cout << "\033[31m";
-			std::cout << std::string(space, ' ') << node->data << "\033[0m" << std::endl;
-			this->_print(node->left, space);
+				buffer << "\033[31m";
+			buffer << node->data << "\033[0m" << std::endl;
+			if (node->left != this->sentry())
+       			this->_print(node->left, buffer, true, std::string(prefix).append(isTail ? "    " : "│   "));
 		}
 	};
 } // namespace ft
