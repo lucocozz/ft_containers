@@ -6,13 +6,17 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/02 20:52:44 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/03 18:41:30 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+# include <string>
 # include <memory>
+# include <stddef.h>
 # include "utility.hpp"
+# include "iterators/type_traits.hpp"
+# include "iterators/reverseIterator.hpp"
 
 namespace ft
 {
@@ -22,19 +26,140 @@ namespace ft
 	class Node
 	{
 	public:
-		T			data;
+		typedef T				value_type;
+		typedef	Node*			pointer;
+		typedef	Node&			reference;
+		typedef	Node<T>*		link_type;
+
+
+		value_type	data;
 		node_color	color;
-		Node		*left;
-		Node		*right;
-		Node		*parent;
+		pointer		left;
+		pointer		right;
+		pointer		parent;
+
 
 		Node(): data(NULL), color(Black), left(NULL), right(NULL), parent(NULL) {}
 
-		Node(const T &x): data(x), color(Black), left(NULL), right(NULL), parent(NULL) {}
+		Node(const value_type &x): data(x), color(Black), left(NULL), right(NULL), parent(NULL) {}
 
 		~Node() {}
+
+		reference	operator=(const reference rhs)
+		{
+			if (this != &rhs)
+			{
+				this->data = rhs.data;
+				this->color = rhs.color;
+				this->left = rhs.left;
+				this->right = rhs.right;
+				this->parent = rhs.parent;
+			}
+			return (*this);
+		}
+
+
+		T	*operator->()
+		{
+			return (&this->data);
+		}
 	};
 
+
+
+
+
+
+	template<class T>
+	class RedBlackTree_iterator
+	{
+	public:
+		typedef T								value_type;
+		typedef ptrdiff_t						difference_type;
+		typedef T*								pointer;
+		typedef T&								reference;
+		typedef ft::bidirectional_iterator_tag	iterator_category;
+		typedef	RedBlackTree_iterator<T>*		link_type;
+
+
+		pointer		current;
+
+
+		RedBlackTree_iterator(): current(NULL) {}
+
+		RedBlackTree_iterator(pointer ptr): current(ptr) {}
+
+		RedBlackTree_iterator(const RedBlackTree_iterator &copy)
+		{
+			*this = copy;
+		}
+
+		~RedBlackTree_iterator() {}
+
+
+
+		RedBlackTree_iterator	&operator=(const RedBlackTree_iterator &other)
+		{
+			if (this != &other)
+				this->current = other.current;
+			return (*this);
+		}
+
+		reference	operator*(void) const
+		{
+			return (*this->current);
+		}
+
+		value_type	operator->(void)
+		{
+			return (*this->current);
+		}
+
+		RedBlackTree_iterator	operator++(int)
+		{
+			//! implement post-increment
+			return (RedBlackTree_iterator());
+		}
+
+		RedBlackTree_iterator	&operator++(void)
+		{
+			//! implement pre-increment
+			return (*this);
+		}
+
+		RedBlackTree_iterator	operator--(int)
+		{
+			//! implement post-decrement
+			return (RedBlackTree_iterator());
+		}
+
+		RedBlackTree_iterator	&operator--(void)
+		{
+			//! implement pre-decrement
+			return (*this);
+		}
+
+		operator RedBlackTree_iterator<const T>() const {
+			return (RedBlackTree_iterator<const T>(this->current));
+		}
+	};
+
+
+	template<class Tx, class Ty>
+	bool	operator==(const RedBlackTree_iterator<Tx> &x, const RedBlackTree_iterator<Ty> &y)
+	{
+		if (x.current == y.current)
+			return (true);
+		return (false);
+	}
+
+	template<class Tx, class Ty>
+	bool	operator!=(const RedBlackTree_iterator<Tx> &x, const RedBlackTree_iterator<Ty> &y)
+	{
+		if (x.current != y.current)
+			return (true);
+		return (false);
+	}
 
 
 
@@ -52,6 +177,8 @@ namespace ft
 		typedef	typename ft::RedBlackTree_iterator<node_type>			iterator;
 		typedef typename ft::RedBlackTree_iterator<const node_type>		const_iterator;
 		typedef	size_t													size_type;
+		typedef ft::reverse_iterator<iterator>							reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>					const_reverse_iterator;
 
 
 	private:
@@ -95,21 +222,54 @@ namespace ft
 			return (*this);
 		}
 
-
-
-
-
-
-		pointer	root(void) const
+		
+		
+		
+		
+		
+		
+		//*	iterators:
+		iterator	begin()
 		{
-			return (this->_root);
+
 		}
 
-		pointer	sentry(void) const
+		const_iterator	begin() const
 		{
-			return (this->_sentry);
+			
+		}
+		
+		iterator	end(void)
+		{
+			return (this->sentry());
 		}
 
+		const_iterator	end(void) const
+		{
+			return (this->sentry());
+		}
+
+		const_reverse_iterator	rbegin() const
+		{
+
+		}
+
+		reverse_iterator	rend()
+		{
+
+		}
+
+		const_reverse_iterator	rend() const
+		{
+			
+		}
+
+
+
+
+
+
+		//*	capacity:
 		size_type	size() const
 		{
 			return (this->_size);
@@ -120,6 +280,52 @@ namespace ft
 
 
 
+		//* modifier:
+		ft::pair<iterator, bool>	insert(const value_type &x)
+		{
+			return (this->_insert(this->root(), x));
+		}
+
+		iterator	insert(iterator hint, const value_type &x)
+		{
+			pointer						node;
+			ft::pair<iterator, bool>	ret;
+
+			node = hint.current;
+			if (node->parent != NULL && this->_comp(node->parent->data, x))
+				ret = this->_insert(node, x);
+			else
+				ret = this->_insert(this->root(), x);
+			return (ret.first);
+		}
+
+		void	erase(const value_type &x)
+		{
+			
+		}
+
+
+
+
+
+
+		//* observers:
+		pointer	root(void) const
+		{
+			return (this->_root);
+		}
+
+		pointer	sentry(void) const
+		{
+			return (this->_sentry);
+		}
+
+
+
+
+
+
+		//* operations:
 		iterator	search(const value_type &x)
 		{
 			return (this->_search(this->root(), x));
@@ -130,52 +336,7 @@ namespace ft
 			return (this->_search(this->root(), x));
 		}
 
-		void	insert(const value_type &x)
-		{
-			pointer	parent = NULL;
-			pointer	current = this->root();
-			pointer	node = this->_allocNode(x, this->sentry(), this->sentry(), Red);
 
-			this->_size++;
-			while (current != this->sentry())
-			{
-				parent = current;
-				if (this->_comp(node->data, current->data))
-					current = current->left;
-				else
-					current = current->right;
-			}
-			node->parent = parent;
-			if (parent == NULL)
-				this->_root = node;
-			else if (this->_comp(node->data, parent->data))
-				parent->left = node;
-			else
-				parent->right = node;
-			if (node->parent == NULL)
-			{
-				node->color = Black;
-				return;
-			}
-			if (node->parent->parent == NULL)
-				return;
-			this->_insertFix(node);
-		}
-
-
-
-
-
-
-		iterator	end()
-		{
-			return (this->sentry());
-		}
-
-		const_iterator	end() const
-		{
-			return (this->sentry());
-		}
 
 
 
@@ -186,6 +347,14 @@ namespace ft
 			std::stringstream	buffer;
 
 			this->_print(node, buffer, true, "");
+			std::cout << buffer.str();
+		}
+
+		void	print(void)
+		{
+			std::stringstream	buffer;
+
+			this->_print(this->root(), buffer, true, "");
 			std::cout << buffer.str();
 		}
 
@@ -204,6 +373,43 @@ namespace ft
 			node->right = right;
 			node->color = color;
 			return (node);
+		}
+
+		ft::pair<iterator, bool>	_insert(pointer current, const value_type &x)
+		{
+			pointer	parent = NULL;
+			pointer	node = this->_allocNode(x, this->sentry(), this->sentry(), Red);
+
+			while (current != this->sentry())
+			{
+				parent = current;
+				if (this->_comp(node->data, current->data))
+					current = current->left;
+				else if (this->_comp(current->data, node->data))
+					current = current->right;
+				else
+				{
+					this->_alloc.deallocate(node, 1);
+					return (ft::make_pair(current, false));
+				}
+			}
+			this->_size++;
+			node->parent = parent;
+			if (parent == NULL)
+				this->_root = node;
+			else if (this->_comp(node->data, parent->data))
+				parent->left = node;
+			else
+				parent->right = node;
+			if (node->parent == NULL)
+			{
+				node->color = Black;
+				return (ft::make_pair(node, true));
+			}
+			if (node->parent->parent == NULL)
+				return (ft::make_pair(node, true));
+			this->_insertFix(node);
+			return (ft::make_pair(node, true));
 		}
 
 		void	_insertFix(pointer node)
@@ -344,7 +550,7 @@ namespace ft
 				buffer << "\033[31m";
 			buffer << node->data << "\033[0m" << std::endl;
 			if (node->left != this->sentry())
-       			this->_print(node->left, buffer, true, std::string(prefix).append(isTail ? "    " : "│   "));
+				this->_print(node->left, buffer, true, std::string(prefix).append(isTail ? "    " : "│   "));
 		}
 	};
 } // namespace ft

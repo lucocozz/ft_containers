@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 10:38:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/02 11:22:28 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/03 18:38:24 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ namespace ft
 
 		~map()
 		{
-			this->_tree.print(this->_tree.root());
+			this->_tree.print();
 		}
 
 		map	&operator=(const map &other)
@@ -203,23 +203,21 @@ namespace ft
 		}
 
 		//*	modifiers:
-		value_type	insert(const value_type &x)
+		ft::pair<iterator, bool>	insert(const value_type &x)
 		{
-			if (this->count(x.first) == 0)
-				this->_tree.insert(x);
-			return (x);
+			return (this->_tree.insert(x));
 		}
 
-		iterator	insert(iterator position, const value_type &x)
+		iterator	insert(iterator hint, const value_type &x)
 		{
-
+			return (this->_tree.insert(hint, x));
 		}
 
 		template<class InputIterator>
 		typename ft::enable_if<!ft::is_integral<InputIterator>::value, void>::type
 		insert(InputIterator first, InputIterator last)
 		{
-			
+			//! dont forget implement it
 		}
 
 		void	erase(iterator position)
