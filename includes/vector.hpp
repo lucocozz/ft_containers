@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 15:41:16 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/01 14:10:34 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/05 21:21:53 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,14 +195,14 @@ namespace ft
 				throw (std::length_error("vector::reserve"));
 			if (n > this->capacity())
 			{
-				data = this->_alloc.allocate(n);
+				data = this->_alloc.allocate(n + 1);
 				if (this->_data != NULL)
 				{
 					for (size_type i = 0; i < this->size(); i++)
 						this->_alloc.construct(&data[i], this->_data[i]);
 					this->_alloc.deallocate(this->_data, this->capacity());
 				}
-				this->_capacity = n;
+				this->_capacity = n + 1;
 				this->_data = data;
 			}
 		}
@@ -303,7 +303,7 @@ namespace ft
 				for (int i = 0; this->end() - i != pos; i++)
 					this->_alloc.construct(&(*(this->end() - i - 1)), *(oldEnd - i - 1));
 			for (size_type i = 0; i < n; i++, pos++)
-				this->_alloc.construct(&(*pos), x);
+				this->_alloc.construct(pos.current, x);
 		}
 
 		template<class InputIterator>
@@ -323,7 +323,7 @@ namespace ft
 				for (int i = 0; this->end() - i != pos; i++)
 					this->_alloc.construct(&(*(this->end() - i - 1)), *(oldEnd - i - 1));
 			for (; first != last; first++, pos++)
-				this->_alloc.construct(&(*pos), *first);
+				this->_alloc.construct(pos.current, *first);
 		}
 
 		iterator	erase(iterator position)
@@ -339,9 +339,9 @@ namespace ft
 			if (first != last)
 			{
 				for (; last != this->end(); last++, it++)
-					this->_alloc.construct(&(*it), *last);
+					this->_alloc.construct(it.current, *last);
 				for (; it != this->end(); it++, size--)
-					this->_alloc.destroy(&(*it));
+					this->_alloc.destroy(it.current);
 				this->_size = size;
 			}
 			return (first);

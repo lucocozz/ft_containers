@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/03 18:41:30 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/08 18:17:46 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ namespace ft
 		typedef T				value_type;
 		typedef	Node*			pointer;
 		typedef	Node&			reference;
-		typedef	Node<T>*		link_type;
 
 
 		value_type	data;
@@ -59,11 +58,35 @@ namespace ft
 		}
 
 
-		T	*operator->()
+		T	*operator->(void)
+		{
+			return (&this->data);
+		}
+
+		const T	*operator->(void) const
 		{
 			return (&this->data);
 		}
 	};
+
+
+	template<class Tx, class Ty>
+	bool	operator==(const Node<Tx> &x, const Node<Ty> &y)
+	{
+		if (&x == &y)
+			return (true);
+		return (false);
+	}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -79,15 +102,20 @@ namespace ft
 		typedef T*								pointer;
 		typedef T&								reference;
 		typedef ft::bidirectional_iterator_tag	iterator_category;
-		typedef	RedBlackTree_iterator<T>*		link_type;
 
 
 		pointer		current;
 
 
-		RedBlackTree_iterator(): current(NULL) {}
+		RedBlackTree_iterator():
+			current(NULL), _end(NULL) {}
 
-		RedBlackTree_iterator(pointer ptr): current(ptr) {}
+		RedBlackTree_iterator(pointer ptr):
+			current(ptr), _end(NULL) {}
+
+		RedBlackTree_iterator(pointer ptr, pointer sentry):
+			current(ptr), _end(sentry) {}
+
 
 		RedBlackTree_iterator(const RedBlackTree_iterator &copy)
 		{
@@ -101,48 +129,145 @@ namespace ft
 		RedBlackTree_iterator	&operator=(const RedBlackTree_iterator &other)
 		{
 			if (this != &other)
+			{
 				this->current = other.current;
+				this->_end = other._end;
+			}
 			return (*this);
 		}
 
-		reference	operator*(void) const
+		const reference	operator*(void)
 		{
 			return (*this->current);
 		}
 
-		value_type	operator->(void)
+		const reference	operator*(void) const
+		{
+			return (*this->current);
+		}
+
+		value_type	&operator->(void)
+		{
+			return (*this->current);
+		}
+
+		const value_type	operator->(void) const
 		{
 			return (*this->current);
 		}
 
 		RedBlackTree_iterator	operator++(int)
 		{
-			//! implement post-increment
-			return (RedBlackTree_iterator());
+			RedBlackTree_iterator	it(*this);
+
+			this->current = this->_increase();
+			return (it);
 		}
 
 		RedBlackTree_iterator	&operator++(void)
 		{
-			//! implement pre-increment
+			this->current = this->_increase();
 			return (*this);
 		}
 
 		RedBlackTree_iterator	operator--(int)
 		{
-			//! implement post-decrement
-			return (RedBlackTree_iterator());
+			RedBlackTree_iterator	it(*this);
+
+			this->current = this->_decrease();
+			return (it);
 		}
 
 		RedBlackTree_iterator	&operator--(void)
 		{
-			//! implement pre-decrement
+			this->current = this->_decrease();
 			return (*this);
 		}
 
-		operator RedBlackTree_iterator<const T>() const {
+		operator RedBlackTree_iterator<const T>() const
+		{
 			return (RedBlackTree_iterator<const T>(this->current));
 		}
+
+
+
+
+
+	private:
+		pointer			_end;
+
+
+		pointer	_minimum(pointer node)
+		{
+			pointer	current = node;
+
+			while (current->left != this->_end)
+				current = current->left;
+			return (current);
+		}
+
+		pointer	_maximum(pointer node)
+		{
+			pointer	current = node;
+
+			while (current->right != this->_end)
+				current = current->right;
+			return (current);
+		}
+
+		pointer	_topIncrease(pointer node)
+		{
+			pointer	current = node;
+			pointer	parent = current->parent;
+
+			while (parent != NULL && current == parent->right)
+			{
+				current = parent;
+				parent = parent->parent;
+			}
+			if (parent == NULL)
+				current = this->_end;
+			else
+				current = parent;
+			return (current);
+		}
+
+		pointer	_topDecrease(pointer node)
+		{
+			pointer	current = node;
+			pointer	parent = current->parent;
+
+			while (parent != NULL && current == parent->left)
+			{
+				current = parent;
+				parent = parent->parent;
+			}
+			if (parent == NULL)
+				current = this->_end;
+			else
+				current = parent;
+			return (current);
+		}
+
+		pointer	_increase(void)
+		{
+			if (this->current == this->_end)
+				return (this->current);
+			if (this->current->right == this->_end)
+				return (this->_topIncrease(this->current));
+			return (this->_minimum(this->current->right));
+		}
+
+		pointer	_decrease(void)
+		{
+			if (this->current == this->_end)
+				return (this->current);
+			if (this->current->left == this->_end)
+				return (this->_topDecrease(this->current));
+			return (this->_maximum(this->current->left));
+		}
 	};
+
 
 
 	template<class Tx, class Ty>
@@ -165,20 +290,31 @@ namespace ft
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 	template<class T, class Compare = std::less<T>, class Allocator = std::allocator<Node<T> > >
 	class RedBlackTree
 	{
 	public:
-		typedef T														value_type;
-		typedef Node<value_type>										node_type;
-		typedef Compare													key_compare;
-		typedef Allocator												allocator_type;
-		typedef node_type*												pointer;
-		typedef	typename ft::RedBlackTree_iterator<node_type>			iterator;
-		typedef typename ft::RedBlackTree_iterator<const node_type>		const_iterator;
-		typedef	size_t													size_type;
-		typedef ft::reverse_iterator<iterator>							reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator>					const_reverse_iterator;
+		typedef T													value_type;
+		typedef Node<value_type>									node_type;
+		typedef Compare												key_compare;
+		typedef Allocator											allocator_type;
+		typedef node_type*											pointer;
+		typedef	typename ft::RedBlackTree_iterator<node_type>		iterator;
+		typedef typename ft::RedBlackTree_iterator<const node_type>	const_iterator;
+		typedef	size_t												size_type;
+		typedef ft::reverse_iterator<iterator>						reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 
 
 	private:
@@ -210,6 +346,7 @@ namespace ft
 
 		~RedBlackTree()
 		{
+			this->clear();
 			this->_alloc.deallocate(this->_sentry, 1); //? probably free at end
 		}
 
@@ -217,7 +354,9 @@ namespace ft
 		{
 			if (*this != &other)
 			{
-				
+				this->clear();
+				for (iterator it = other.begin(); it != other.end(); it++)
+					this->_insert(this->root(), it.current);
 			}
 			return (*this);
 		}
@@ -231,37 +370,42 @@ namespace ft
 		//*	iterators:
 		iterator	begin()
 		{
-
+			return (iterator(this->_minimum(this->root()), this->sentry()));
 		}
 
 		const_iterator	begin() const
 		{
-			
+			return (const_iterator(this->_minimum(this->root()), this->sentry()));
 		}
 		
 		iterator	end(void)
 		{
-			return (this->sentry());
+			return (iterator(this->sentry(), this->sentry()));
 		}
 
 		const_iterator	end(void) const
 		{
-			return (this->sentry());
+			return (const_iterator(this->sentry(), this->sentry()));
+		}
+
+		reverse_iterator	rbegin()
+		{
+			return (reverse_iterator(this->_maximum(this->root()), this->sentry()));
 		}
 
 		const_reverse_iterator	rbegin() const
 		{
-
+			return (const_reverse_iterator(this->_maximum(this->root()), this->sentry()));
 		}
 
 		reverse_iterator	rend()
 		{
-
+			return (reverse_iterator(this->sentry(), this->sentry()));
 		}
 
 		const_reverse_iterator	rend() const
 		{
-			
+			return (const_reverse_iterator(this->sentry(), this->sentry()));
 		}
 
 
@@ -275,6 +419,10 @@ namespace ft
 			return (this->_size);
 		}
 
+		size_type	max_size() const
+		{
+			return (this->_alloc.max_size());
+		}
 
 
 
@@ -283,25 +431,57 @@ namespace ft
 		//* modifier:
 		ft::pair<iterator, bool>	insert(const value_type &x)
 		{
-			return (this->_insert(this->root(), x));
+			pointer						node;
+			ft::pair<iterator, bool>	ret;
+
+			node = this->_allocNode(x, this->sentry(), this->sentry(), Red);
+			ret = this->_insert(this->root(), node);
+			if (ret.second == false)
+				this->_deallocNode(node);
+			return (ret);
 		}
 
 		iterator	insert(iterator hint, const value_type &x)
 		{
-			pointer						node;
 			ft::pair<iterator, bool>	ret;
+			pointer						node;
+			pointer						current = hint.current;
+			pointer						parent = current->parent;
 
-			node = hint.current;
-			if (node->parent != NULL && this->_comp(node->parent->data, x))
-				ret = this->_insert(node, x);
-			else
-				ret = this->_insert(this->root(), x);
+			node = this->_allocNode(x, this->sentry(), this->sentry(), Red);
+			while (parent != NULL && this->_comp(parent->data, x))
+			{
+				current = current->parent;
+				parent = parent->parent;
+			}
+			if (parent == NULL)
+				current = this->root();
+			ret = this->_insert(current, node);
+			if (ret.second == false)
+				this->_deallocNode(node);
 			return (ret.first);
 		}
 
-		void	erase(const value_type &x)
+		size_type	erase(const value_type &x)
 		{
+			iterator	it = this->search(x);
 			
+			if (it == this->end())
+				return (0);
+			this->_erase(it.current);
+			return (1);
+		}
+
+		void	erase(iterator position)
+		{
+			if (position != this->end())
+				this->_erase(position.current);
+		}
+
+		void	clear()
+		{
+			while (this->root() != this->sentry())
+				this->_erase(this->root());
 		}
 
 
@@ -333,7 +513,43 @@ namespace ft
 
 		const_iterator	search(const value_type &x) const
 		{
-			return (this->_search(this->root(), x));
+			return (this->_search(this->root(), x).current);
+		}
+
+		iterator	lower_bound(const value_type &x)
+		{
+			iterator	it = this->begin();
+
+			while (it != this->end() && this->_comp(x, it.current->data))
+				it++;
+			return (it);
+		}
+
+		const_iterator	 lower_bound(const value_type &x) const
+		{
+			iterator	it = this->begin();
+
+			while (it != this->end() && this->_comp(x, it.current->data))
+				it++;
+			return (it.current);
+		}
+
+		iterator	upper_bound(const value_type &x)
+		{
+			iterator	it = this->begin();
+
+			while (it != this->end() && !this->_comp(x, it.current->data))
+				it++;
+			return (it);
+		}
+
+		const_iterator	upper_bound(const value_type &x) const
+		{
+			iterator	it = this->begin();
+
+			while (it != this->end() && !this->_comp(x, it.current->data))
+				it++;
+			return (it.current);
 		}
 
 
@@ -346,16 +562,26 @@ namespace ft
 		{
 			std::stringstream	buffer;
 
-			this->_print(node, buffer, true, "");
-			std::cout << buffer.str();
+			if (node != this->sentry())
+			{
+				this->_print(node, buffer, true, "");
+				std::cout << buffer.str();
+			}
+			else
+				std::cout << "empty" << std::endl;
 		}
 
 		void	print(void)
 		{
 			std::stringstream	buffer;
 
-			this->_print(this->root(), buffer, true, "");
-			std::cout << buffer.str();
+			if (this->root() != this->sentry())
+			{
+				this->_print(this->root(), buffer, true, "");
+				std::cout << buffer.str();
+			}
+			else
+				std::cout << "empty" << std::endl;
 		}
 
 
@@ -375,10 +601,16 @@ namespace ft
 			return (node);
 		}
 
-		ft::pair<iterator, bool>	_insert(pointer current, const value_type &x)
+		void	_deallocNode(pointer node)
+		{
+			this->_alloc.destroy(node);
+			this->_alloc.deallocate(node, 1);
+		}
+
+
+		ft::pair<iterator, bool>	_insert(pointer current, pointer node)
 		{
 			pointer	parent = NULL;
-			pointer	node = this->_allocNode(x, this->sentry(), this->sentry(), Red);
 
 			while (current != this->sentry())
 			{
@@ -388,10 +620,7 @@ namespace ft
 				else if (this->_comp(current->data, node->data))
 					current = current->right;
 				else
-				{
-					this->_alloc.deallocate(node, 1);
 					return (ft::make_pair(current, false));
-				}
 			}
 			this->_size++;
 			node->parent = parent;
@@ -468,6 +697,139 @@ namespace ft
 			this->_root->color = Black;
 		}
 
+		
+		
+		
+		
+		
+		void	_erase(pointer node)
+		{
+			pointer		x;
+			pointer		y = node;
+			node_color	originalColor = node->color;
+
+			this->_size--;
+			if (node->left == this->sentry())
+			{
+				x = node->right;
+				this->_transplant(node, node->right);
+			}
+			else if (node->right == this->sentry())
+			{
+				x = node->left;
+				this->_transplant(node, node->left);
+			}
+			else
+			{
+				y = this->_minimum(node->right);
+				originalColor = y->color;
+				x = y->right;
+				if (y->parent == node)
+					x->parent = y;
+				else
+				{
+					this->_transplant(y, y->right);
+					y->right = node->right;
+					y->right->parent = y;
+				}
+				this->_transplant(node, y);
+				y->left = node->left;
+				y->left->parent = y;
+				y->color = node->color;
+			}
+			this->_deallocNode(node);
+			if (originalColor == Black)
+				this->_eraseFix(x);
+		}
+
+		void	_eraseFix(pointer node)
+		{
+			pointer	uncle;
+
+			while (node != this->root() && node->color == Black)
+			{
+				if (node == node->parent->left)
+				{
+					uncle = node->parent->right;
+					if (uncle->color == Red)
+					{
+						uncle->color = Black;
+						node->parent->color = Red;
+						this->_leftRotate(node->parent);
+						uncle = node->parent->right;
+					}
+					if (uncle->left->color == Black && uncle->right->color == Black)
+					{
+						uncle->color = Red;
+						node = node->parent;
+					}
+					else
+					{
+						if (uncle->right->color == Black)
+						{
+							uncle->left->color = Black;
+							uncle->color = Red;
+							this->_rightRotate(uncle);
+							uncle = node->parent->right;
+						}
+						uncle->color = node->parent->color;
+						node->parent->color = Black;
+						uncle->right->color = Black;
+						this->_leftRotate(node->parent);
+						node = this->root();
+					}
+				}
+				else
+				{
+					uncle = node->parent->left;
+					if (uncle->color == Red)
+					{
+						uncle->color = Black;
+						node->parent->color = Red;
+						this->_rightRotate(node->parent);
+						uncle = node->parent->left;
+					}
+					if (uncle->right->color == Black && uncle->left->color == Black)
+					{
+						uncle->color = Red;
+						node = node->parent;
+					}
+					else
+					{
+						if (uncle->left->color == Black)
+						{
+							uncle->right->color = Black;
+							uncle->color = Red;
+							this->_leftRotate(uncle);
+							uncle = node->parent->left;
+						}
+						uncle->color = node->parent->color;
+						node->parent->color = Black;
+						uncle->left->color = Black;
+						this->_rightRotate(node->parent);
+						node = this->root();
+					}
+				}
+			}
+			node->color = Black;
+		}
+
+
+
+
+
+
+		void	_transplant(pointer node, pointer transplanted)
+		{
+			if (node->parent == NULL)
+				this->_root = transplanted;
+			else if (node == node->parent->left)
+				node->parent->left = transplanted;
+			else
+				node->parent->right = transplanted;
+			transplanted->parent = node->parent;
+		}
+		
 		void	_leftRotate(pointer node)
 		{
 			pointer	child = node->right;
@@ -504,6 +866,8 @@ namespace ft
 			node->parent = child;
 		}
 
+
+
 		iterator	_search(const pointer node, const value_type &x)
 		{
 			pointer	current = node;
@@ -520,20 +884,57 @@ namespace ft
 			return (this->end());
 		}
 
-		const_iterator	_search(const pointer node, const value_type &x) const
+
+
+
+
+
+		pointer	_minimum(pointer node)
 		{
 			pointer	current = node;
 
-			while (current != this->sentry())
+			if (current != this->sentry())
 			{
-				if (this->_comp(x, current->data))
+				while (current->left != this->sentry())
 					current = current->left;
-				else if (this->_comp(current->data, x))
-					current = current->right;
-				else
-					return (current);
 			}
-			return (this->end());
+			return (current);
+		}
+
+		pointer	_minimum(pointer node) const
+		{
+			pointer	current = node;
+
+			if (current != this->sentry())
+			{
+				while (current->left != this->sentry())
+					current = current->left;
+			}
+			return (current);
+		}
+
+		pointer	_maximum(pointer node)
+		{
+			pointer	current = node;
+
+			if (current != this->sentry())
+			{
+				while (current->right != this->sentry())
+					current = current->right;
+			}
+			return (current);
+		}
+
+		pointer	_maximum(pointer node) const
+		{
+			pointer	current = node;
+
+			if (current != this->sentry())
+			{
+				while (current->right != this->sentry())
+					current = current->right;
+			}
+			return (current);
 		}
 
 
