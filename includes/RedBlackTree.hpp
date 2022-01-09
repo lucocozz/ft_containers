@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/08 18:17:46 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/09 18:10:54 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,17 +56,6 @@ namespace ft
 			}
 			return (*this);
 		}
-
-
-		T	*operator->(void)
-		{
-			return (&this->data);
-		}
-
-		const T	*operator->(void) const
-		{
-			return (&this->data);
-		}
 	};
 
 
@@ -98,6 +87,7 @@ namespace ft
 	{
 	public:
 		typedef T								value_type;
+		typedef typename T::value_type			data_type;
 		typedef ptrdiff_t						difference_type;
 		typedef T*								pointer;
 		typedef T&								reference;
@@ -136,24 +126,24 @@ namespace ft
 			return (*this);
 		}
 
-		const reference	operator*(void)
+		data_type	&operator*(void)
 		{
-			return (*this->current);
+			return (this->current->data);
 		}
 
-		const reference	operator*(void) const
+		const data_type	&operator*(void) const
 		{
-			return (*this->current);
+			return (this->current->data);
 		}
 
-		value_type	&operator->(void)
+		data_type	*operator->(void)
 		{
-			return (*this->current);
+			return (&this->operator*());
 		}
 
-		const value_type	operator->(void) const
+		const data_type	*operator->(void) const
 		{
-			return (*this->current);
+			return (&this->operator*());
 		}
 
 		RedBlackTree_iterator	operator++(int)
@@ -186,7 +176,7 @@ namespace ft
 
 		operator RedBlackTree_iterator<const T>() const
 		{
-			return (RedBlackTree_iterator<const T>(this->current));
+			return (RedBlackTree_iterator<const T>(this->current, this->_end));
 		}
 
 
@@ -195,7 +185,6 @@ namespace ft
 
 	private:
 		pointer			_end;
-
 
 		pointer	_minimum(pointer node)
 		{
@@ -212,6 +201,19 @@ namespace ft
 
 			while (current->right != this->_end)
 				current = current->right;
+			return (current);
+		}
+
+		pointer	_topRoot(pointer node)
+		{
+			pointer	current = node;
+			pointer	parent = current->parent;
+
+			while (parent != NULL)
+			{
+				current = parent;
+				parent = parent->parent;
+			}
 			return (current);
 		}
 
@@ -260,7 +262,9 @@ namespace ft
 
 		pointer	_decrease(void)
 		{
-			if (this->current == this->_end)
+			if (this->current == this->_end && this->current->parent != NULL)
+				return (this->_maximum(this->_topRoot(this->current)));
+			else
 				return (this->current);
 			if (this->current->left == this->_end)
 				return (this->_topDecrease(this->current));
@@ -301,7 +305,7 @@ namespace ft
 
 
 
-	template<class T, class Compare = std::less<T>, class Allocator = std::allocator<Node<T> > >
+	template<class T, class Compare = std::less<T>, class Allocator = std::allocator<ft::Node<T> > >
 	class RedBlackTree
 	{
 	public:
@@ -562,26 +566,24 @@ namespace ft
 		{
 			std::stringstream	buffer;
 
+			std::cout << "size: " << this->size() << std::endl;
 			if (node != this->sentry())
 			{
 				this->_print(node, buffer, true, "");
 				std::cout << buffer.str();
 			}
-			else
-				std::cout << "empty" << std::endl;
 		}
 
 		void	print(void)
 		{
 			std::stringstream	buffer;
 
+			std::cout <<  "size: " << this->size() << std::endl;
 			if (this->root() != this->sentry())
 			{
 				this->_print(this->root(), buffer, true, "");
 				std::cout << buffer.str();
 			}
-			else
-				std::cout << "empty" << std::endl;
 		}
 
 
@@ -708,7 +710,6 @@ namespace ft
 			pointer		y = node;
 			node_color	originalColor = node->color;
 
-			this->_size--;
 			if (node->left == this->sentry())
 			{
 				x = node->right;
@@ -737,6 +738,7 @@ namespace ft
 				y->left->parent = y;
 				y->color = node->color;
 			}
+			this->_size--;
 			this->_deallocNode(node);
 			if (originalColor == Black)
 				this->_eraseFix(x);
