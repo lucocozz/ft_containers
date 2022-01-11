@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 10:38:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/09 17:56:42 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/11 20:44:49 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,40 +315,43 @@ namespace ft
 
 
 	template<class Key, class T, class Compare, class Allocator>
-	bool	operator==(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> & rhs)
+	bool	operator==(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
 	{
+		if (lhs.size() != rhs.size())
+			return (false);
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+
+	template<class Key, class T, class Compare, class Allocator>
+	bool	operator!=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
+	{
+		if (lhs == rhs)
+			return (false);
 		return (true);
 	}
 
 	template<class Key, class T, class Compare, class Allocator>
-	bool	operator!=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> & rhs)
+	bool	operator<(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
 	{
-		return (true);
-	}
-
-
-	template<class Key, class T, class Compare, class Allocator>
-	bool	operator<(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> & rhs)
-	{
-		return (true);
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 
 	template<class Key, class T, class Compare, class Allocator>
-	bool	operator<=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> & rhs)
+	bool	operator<=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
 	{
-		return (true);
+		return (!(rhs < lhs));
 	}
 
 	template<class Key, class T, class Compare, class Allocator>
-	bool	operator>(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> & rhs)
+	bool	operator>(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
 	{
-		return (true);
+		return (rhs < lhs);
 	}
 
 	template<class Key, class T, class Compare, class Allocator>
-	bool	operator>=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> & rhs)
+	bool	operator>=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
 	{
-		return (true);
+		return (!(lhs < rhs));
 	}
 
 
@@ -357,7 +360,7 @@ namespace ft
 
 	//*	specialized algorithms:
 	template<class Key, class T, class Compare, class Allocator>
-	void	swap(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> & rhs)
+	void	swap(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
 	{
 		lhs.swap(rhs);
 	}

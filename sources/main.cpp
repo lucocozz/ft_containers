@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 16:10:48 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/09 17:46:22 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/11 19:44:19 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,56 +16,48 @@
 #include "map.hpp"
 #include "vector.hpp"
 
-#define NAMESPACE std
+#define NAMESPACE ft
+#define TESTED_NAMESPACE NAMESPACE
 
-template <typename T>
-void	printPair(const T &iterator)
+#define T1 int
+#define T2 std::string
+typedef TESTED_NAMESPACE::map<T1, T2>::value_type T3;
+typedef TESTED_NAMESPACE::map<T1, T2>::iterator iterator;
+// typedef NAMESPACE::pair<const T1, T2> T3;
+
+// int main (void)
+// {
+// 	std::list<T3> lst;
+// 	std::map<int, int> yolo;
+
+// 	unsigned int lst_size = 7;
+// 	for (unsigned int i = 0; i < lst_size; ++i)
+// 		lst.push_back(T3(i, i));
+// 	NAMESPACE::map<T1, T2> foo(lst.begin(), lst.end());
+
+// 	lst.clear(); lst_size = 4;
+// 	for (unsigned int i = 0; i < lst_size; ++i)
+// 		lst.push_back(T3(i, i));
+// 	NAMESPACE::map<T1, T2> bar(foo);
+
+// 	NAMESPACE::map<T1, T2>::iterator it_foo = foo.begin();
+// 	NAMESPACE::map<T1, T2>::iterator it_bar = bar.begin();
+
+// 	foo.swap(bar);
+
+// 	std::cout << "Iterator validity:" << std::endl;
+// 	std::cout << (it_foo == bar.begin()) << std::endl;
+// 	std::cout << (it_bar == foo.begin()) << std::endl;
+// 	return (0);
+// }
+
+int		main(void)
 {
-	std::cout << "key: " << iterator->first << " | value: " << iterator->second;
-}
+	TESTED_NAMESPACE::map<T1, T2>	mp2;
 
-template <typename T_MAP>
-void	printSize(T_MAP const &mp)
-{
-	std::cout << "size: " << mp.size() << std::endl;
-	std::cout << "max_size: " << mp.max_size() << std::endl;
-	typename T_MAP::const_iterator it = mp.begin(), ite = mp.end();
-	std::cout << std::endl << "Content is:" << std::endl;
-	for (; it != ite; ++it)
-	{
-		std::cout << "- ";
-		printPair(it);
-		std::cout << std::endl;
-	}
-	std::cout << "###############################################" << std::endl;
-}
+	mp2.insert(mp2.begin(), T3(1337, "beauty"));
+	mp2.insert(mp2.end(), T3(1000, "Hello"));
+	mp2.insert(mp2.end(), T3(1500, "World"));
 
-void	ft_comp(const NAMESPACE::map<char, float> &mp, const NAMESPACE::map<char, float>::const_iterator &it1, const NAMESPACE::map<char, float>::const_iterator &it2)
-{
-	bool res[2];
-	static unsigned int i = 0;
-
-
-	std::cout << "\t-- [" << ++i << "] --" << std::endl;
-	res[0] = mp.key_comp()(it1->first, it2->first);
-	res[1] = mp.value_comp()(*it1, *it2);
-	std::cout << "with [" << it1->first << " and " << it2->first << "]: ";
-	std::cout << "key_comp: " << res[0] << " | " << "value_comp: " << res[1] << std::endl;
-}
-
-int	main()
-{
-	NAMESPACE::map<char, float>	mp;
-
-	mp['a'] = 2.3;
-	mp['b'] = 1.4;
-	mp['c'] = 0.3;
-	mp['d'] = 4.2;
-
-	printSize(mp);
-	for (NAMESPACE::map<char, float>::const_iterator it1 = mp.begin(); it1 != mp.end(); ++it1)
-		for (NAMESPACE::map<char, float>::const_iterator it2 = mp.begin(); it2 != mp.end(); ++it2)
-			ft_comp(mp, it1, it2);
-	printSize(mp);
 	return (0);
 }

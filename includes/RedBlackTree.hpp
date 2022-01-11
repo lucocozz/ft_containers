@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/09 18:10:54 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/11 23:29:19 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,10 @@ namespace ft
 		}
 	};
 
-
 	template<class Tx, class Ty>
 	bool	operator==(const Node<Tx> &x, const Node<Ty> &y)
 	{
-		if (&x == &y)
+		if (x.data == y.data)
 			return (true);
 		return (false);
 	}
@@ -82,15 +81,15 @@ namespace ft
 
 
 
-	template<class T>
+	template<class TNode>
 	class RedBlackTree_iterator
 	{
 	public:
-		typedef T								value_type;
-		typedef typename T::value_type			data_type;
+		typedef TNode							node_type;
+		typedef typename node_type::value_type	value_type;
 		typedef ptrdiff_t						difference_type;
-		typedef T*								pointer;
-		typedef T&								reference;
+		typedef node_type*						pointer;
+		typedef node_type&						reference;
 		typedef ft::bidirectional_iterator_tag	iterator_category;
 
 
@@ -126,22 +125,22 @@ namespace ft
 			return (*this);
 		}
 
-		data_type	&operator*(void)
+		value_type	&operator*(void)
 		{
 			return (this->current->data);
 		}
 
-		const data_type	&operator*(void) const
+		const value_type	&operator*(void) const
 		{
 			return (this->current->data);
 		}
 
-		data_type	*operator->(void)
+		value_type	*operator->(void)
 		{
 			return (&this->operator*());
 		}
 
-		const data_type	*operator->(void) const
+		const value_type	*operator->(void) const
 		{
 			return (&this->operator*());
 		}
@@ -174,9 +173,9 @@ namespace ft
 			return (*this);
 		}
 
-		operator RedBlackTree_iterator<const T>() const
+		operator RedBlackTree_iterator<const TNode>(void) const
 		{
-			return (RedBlackTree_iterator<const T>(this->current, this->_end));
+			return (RedBlackTree_iterator<const TNode>(this->current, this->_end));
 		}
 
 
@@ -201,19 +200,6 @@ namespace ft
 
 			while (current->right != this->_end)
 				current = current->right;
-			return (current);
-		}
-
-		pointer	_topRoot(pointer node)
-		{
-			pointer	current = node;
-			pointer	parent = current->parent;
-
-			while (parent != NULL)
-			{
-				current = parent;
-				parent = parent->parent;
-			}
 			return (current);
 		}
 
@@ -253,8 +239,8 @@ namespace ft
 
 		pointer	_increase(void)
 		{
-			if (this->current == this->_end)
-				return (this->current);
+			if (this->current == this->_end && this->_end->parent != NULL)
+				return (this->_minimum(this->current->parent));
 			if (this->current->right == this->_end)
 				return (this->_topIncrease(this->current));
 			return (this->_minimum(this->current->right));
@@ -262,10 +248,8 @@ namespace ft
 
 		pointer	_decrease(void)
 		{
-			if (this->current == this->_end && this->current->parent != NULL)
-				return (this->_maximum(this->_topRoot(this->current)));
-			else
-				return (this->current);
+			if (this->current == this->_end && this->_end->parent != NULL)
+				return (this->_maximum(this->current->parent));
 			if (this->current->left == this->_end)
 				return (this->_topDecrease(this->current));
 			return (this->_maximum(this->current->left));
@@ -345,22 +329,29 @@ namespace ft
 
 		RedBlackTree(const RedBlackTree &copy): _root(NULL), _size(0)
 		{
+			this->_sentry = this->_allocNode(value_type(), NULL, NULL, Black);
+			this->_root = this->_sentry;
 			*this = copy;
 		}
 
 		~RedBlackTree()
 		{
 			this->clear();
-			this->_alloc.deallocate(this->_sentry, 1); //? probably free at end
+			this->_deallocNode(this->_sentry);
 		}
 
 		RedBlackTree	&operator=(const RedBlackTree &other)
 		{
-			if (*this != &other)
+			node_type const	*node = NULL;
+
+			if (this != &other)
 			{
 				this->clear();
-				for (iterator it = other.begin(); it != other.end(); it++)
-					this->_insert(this->root(), it.current);
+				for (const_iterator it = other.begin(); it != other.end(); it++)
+				{
+					node = it.current;
+					this->insert(node->data);
+				}
 			}
 			return (*this);
 		}
@@ -458,7 +449,7 @@ namespace ft
 				current = current->parent;
 				parent = parent->parent;
 			}
-			if (parent == NULL)
+			if (hint.current == this->sentry() || parent == NULL)
 				current = this->root();
 			ret = this->_insert(current, node);
 			if (ret.second == false)
@@ -517,7 +508,9 @@ namespace ft
 
 		const_iterator	search(const value_type &x) const
 		{
-			return (this->_search(this->root(), x).current);
+			iterator	it = this->_search(this->root(), x);
+
+			return (it.current);
 		}
 
 		iterator	lower_bound(const value_type &x)
@@ -609,6 +602,18 @@ namespace ft
 			this->_alloc.deallocate(node, 1);
 		}
 
+		void	_relinkSentry(void)
+		{
+			if (this->sentry() != this->root())
+				this->_sentry->parent = this->root();
+			else
+				this->_sentry->parent = NULL;
+		}
+
+
+
+
+
 
 		ft::pair<iterator, bool>	_insert(pointer current, pointer node)
 		{
@@ -635,11 +640,16 @@ namespace ft
 			if (node->parent == NULL)
 			{
 				node->color = Black;
+				this->_relinkSentry();
 				return (ft::make_pair(node, true));
 			}
 			if (node->parent->parent == NULL)
+			{
+				this->_relinkSentry();
 				return (ft::make_pair(node, true));
+			}
 			this->_insertFix(node);
+			this->_relinkSentry();
 			return (ft::make_pair(node, true));
 		}
 
@@ -738,10 +748,11 @@ namespace ft
 				y->left->parent = y;
 				y->color = node->color;
 			}
-			this->_size--;
 			this->_deallocNode(node);
 			if (originalColor == Black)
 				this->_eraseFix(x);
+			this->_size--;
+			this->_relinkSentry();
 		}
 
 		void	_eraseFix(pointer node)
