@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/11 23:29:19 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/14 16:57:54 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 # include <memory>
 # include <stddef.h>
 # include "utility.hpp"
-# include "iterators/type_traits.hpp"
-# include "iterators/reverseIterator.hpp"
+# include "type_traits.hpp"
+# include "iterator.hpp"
 
 namespace ft
 {
@@ -81,13 +81,13 @@ namespace ft
 
 
 
-	template<class TNode>
+	template<class Node_type, class Value_type>
 	class RedBlackTree_iterator
 	{
 	public:
-		typedef TNode							node_type;
-		typedef typename node_type::value_type	value_type;
-		typedef ptrdiff_t						difference_type;
+		typedef Node_type						node_type;
+		typedef Value_type						value_type;
+		typedef std::ptrdiff_t					difference_type;
 		typedef node_type*						pointer;
 		typedef node_type&						reference;
 		typedef ft::bidirectional_iterator_tag	iterator_category;
@@ -137,12 +137,12 @@ namespace ft
 
 		value_type	*operator->(void)
 		{
-			return (&this->operator*());
+			return (&this->current->data);
 		}
 
 		const value_type	*operator->(void) const
 		{
-			return (&this->operator*());
+			return (&this->current->data);
 		}
 
 		RedBlackTree_iterator	operator++(int)
@@ -173,9 +173,9 @@ namespace ft
 			return (*this);
 		}
 
-		operator RedBlackTree_iterator<const TNode>(void) const
+		operator RedBlackTree_iterator<const Node_type, const Value_type>(void) const
 		{
-			return (RedBlackTree_iterator<const TNode>(this->current, this->_end));
+			return (RedBlackTree_iterator<const Node_type, const Value_type>(this->current, this->_end));
 		}
 
 
@@ -258,16 +258,16 @@ namespace ft
 
 
 
-	template<class Tx, class Ty>
-	bool	operator==(const RedBlackTree_iterator<Tx> &x, const RedBlackTree_iterator<Ty> &y)
+	template<class Tx, class Ux, class Ty, class Uy>
+	bool	operator==(const RedBlackTree_iterator<Tx, Ux> &x, const RedBlackTree_iterator<Ty, Uy> &y)
 	{
 		if (x.current == y.current)
 			return (true);
 		return (false);
 	}
 
-	template<class Tx, class Ty>
-	bool	operator!=(const RedBlackTree_iterator<Tx> &x, const RedBlackTree_iterator<Ty> &y)
+	template<class Tx, class Ux, class Ty, class Uy>
+	bool	operator!=(const RedBlackTree_iterator<Tx, Ux> &x, const RedBlackTree_iterator<Ty, Uy> &y)
 	{
 		if (x.current != y.current)
 			return (true);
@@ -293,16 +293,16 @@ namespace ft
 	class RedBlackTree
 	{
 	public:
-		typedef T													value_type;
-		typedef Node<value_type>									node_type;
-		typedef Compare												key_compare;
-		typedef Allocator											allocator_type;
-		typedef node_type*											pointer;
-		typedef	typename ft::RedBlackTree_iterator<node_type>		iterator;
-		typedef typename ft::RedBlackTree_iterator<const node_type>	const_iterator;
-		typedef	size_t												size_type;
-		typedef ft::reverse_iterator<iterator>						reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator>				const_reverse_iterator;
+		typedef T																		value_type;
+		typedef Node<value_type>														node_type;
+		typedef Compare																	key_compare;
+		typedef Allocator																allocator_type;
+		typedef node_type*																pointer;
+		typedef	typename ft::RedBlackTree_iterator<node_type, value_type>				iterator;
+		typedef typename ft::RedBlackTree_iterator<const node_type, const value_type>	const_iterator;
+		typedef	size_t																	size_type;
+		typedef ft::reverse_iterator<iterator>											reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>									const_reverse_iterator;
 
 
 	private:
@@ -508,9 +508,9 @@ namespace ft
 
 		const_iterator	search(const value_type &x) const
 		{
-			iterator	it = this->_search(this->root(), x);
+			const_iterator	it = this->_search(this->root(), x);
 
-			return (it.current);
+			return (it);
 		}
 
 		iterator	lower_bound(const value_type &x)
@@ -881,7 +881,25 @@ namespace ft
 
 
 
+
+
 		iterator	_search(const pointer node, const value_type &x)
+		{
+			pointer	current = node;
+
+			while (current != this->sentry())
+			{
+				if (this->_comp(x, current->data))
+					current = current->left;
+				else if (this->_comp(current->data, x))
+					current = current->right;
+				else
+					return (current);
+			}
+			return (this->end());
+		}
+
+		const_iterator	_search(const pointer node, const value_type &x) const
 		{
 			pointer	current = node;
 

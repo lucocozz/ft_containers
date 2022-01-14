@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 11:23:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/09 20:51:14 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/12 00:37:08 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ namespace ft
 				this->second = other.second;
 			}
 			return (*this);
+		}
+
+		operator pair<const T1, const T2>(void) const
+		{
+			return (pair<const T1, const T2>(this->first, this->second));
 		}
 	};
 
