@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 00:58:27 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/12 19:49:57 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/14 19:23:54 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,6 @@ namespace ft
 		typedef T type;
 	};
 
-
-
-
-	
-
-	template<typename, typename>
-	struct are_same {
-		static const bool	value = false;
-	};
-
-	template<typename T>
-	struct are_same<T, T> {
-		static const bool	value = true;
-	};
 
 
 

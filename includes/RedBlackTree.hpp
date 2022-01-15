@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/14 16:57:54 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/14 20:05:03 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,21 +88,21 @@ namespace ft
 		typedef Node_type						node_type;
 		typedef Value_type						value_type;
 		typedef std::ptrdiff_t					difference_type;
-		typedef node_type*						pointer;
-		typedef node_type&						reference;
+		typedef value_type*						pointer;
+		typedef value_type&						reference;
 		typedef ft::bidirectional_iterator_tag	iterator_category;
 
 
-		pointer		current;
+		node_type		*current;
 
 
 		RedBlackTree_iterator():
 			current(NULL), _end(NULL) {}
 
-		RedBlackTree_iterator(pointer ptr):
+		RedBlackTree_iterator(node_type *ptr):
 			current(ptr), _end(NULL) {}
 
-		RedBlackTree_iterator(pointer ptr, pointer sentry):
+		RedBlackTree_iterator(node_type *ptr, node_type *sentry):
 			current(ptr), _end(sentry) {}
 
 
@@ -137,12 +137,12 @@ namespace ft
 
 		value_type	*operator->(void)
 		{
-			return (&this->current->data);
+			return (&this->operator*());
 		}
 
 		const value_type	*operator->(void) const
 		{
-			return (&this->current->data);
+			return (&this->operator*());
 		}
 
 		RedBlackTree_iterator	operator++(int)
@@ -183,30 +183,30 @@ namespace ft
 
 
 	private:
-		pointer			_end;
+		node_type			*_end;
 
-		pointer	_minimum(pointer node)
+		node_type	*_minimum(node_type *node)
 		{
-			pointer	current = node;
+			node_type	*current = node;
 
 			while (current->left != this->_end)
 				current = current->left;
 			return (current);
 		}
 
-		pointer	_maximum(pointer node)
+		node_type	*_maximum(node_type *node)
 		{
-			pointer	current = node;
+			node_type	*current = node;
 
 			while (current->right != this->_end)
 				current = current->right;
 			return (current);
 		}
 
-		pointer	_topIncrease(pointer node)
+		node_type	*_topIncrease(node_type *node)
 		{
-			pointer	current = node;
-			pointer	parent = current->parent;
+			node_type	*current = node;
+			node_type	*parent = current->parent;
 
 			while (parent != NULL && current == parent->right)
 			{
@@ -220,10 +220,10 @@ namespace ft
 			return (current);
 		}
 
-		pointer	_topDecrease(pointer node)
+		node_type	*_topDecrease(node_type *node)
 		{
-			pointer	current = node;
-			pointer	parent = current->parent;
+			node_type	*current = node;
+			node_type	*parent = current->parent;
 
 			while (parent != NULL && current == parent->left)
 			{
@@ -237,7 +237,7 @@ namespace ft
 			return (current);
 		}
 
-		pointer	_increase(void)
+		node_type	*_increase(void)
 		{
 			if (this->current == this->_end && this->_end->parent != NULL)
 				return (this->_minimum(this->current->parent));
@@ -246,7 +246,7 @@ namespace ft
 			return (this->_minimum(this->current->right));
 		}
 
-		pointer	_decrease(void)
+		node_type	*_decrease(void)
 		{
 			if (this->current == this->_end && this->_end->parent != NULL)
 				return (this->_maximum(this->current->parent));
@@ -385,22 +385,22 @@ namespace ft
 
 		reverse_iterator	rbegin()
 		{
-			return (reverse_iterator(this->_maximum(this->root()), this->sentry()));
+			return (reverse_iterator(iterator(this->_maximum(this->root()), this->sentry())));
 		}
 
 		const_reverse_iterator	rbegin() const
 		{
-			return (const_reverse_iterator(this->_maximum(this->root()), this->sentry()));
+			return (const_reverse_iterator(const_iterator(this->_maximum(this->root()), this->sentry())));
 		}
 
 		reverse_iterator	rend()
 		{
-			return (reverse_iterator(this->sentry(), this->sentry()));
+			return (reverse_iterator(iterator(this->sentry(), this->sentry())));
 		}
 
 		const_reverse_iterator	rend() const
 		{
-			return (const_reverse_iterator(this->sentry(), this->sentry()));
+			return (const_reverse_iterator(const_iterator(this->sentry(), this->sentry())));
 		}
 
 
@@ -524,7 +524,7 @@ namespace ft
 
 		const_iterator	 lower_bound(const value_type &x) const
 		{
-			iterator	it = this->begin();
+			const_iterator	it = this->begin();
 
 			while (it != this->end() && this->_comp(x, it.current->data))
 				it++;
@@ -542,11 +542,29 @@ namespace ft
 
 		const_iterator	upper_bound(const value_type &x) const
 		{
-			iterator	it = this->begin();
+			const_iterator	it = this->begin();
 
 			while (it != this->end() && !this->_comp(x, it.current->data))
 				it++;
 			return (it.current);
+		}
+
+		ft::pair<iterator, iterator>	equal_range(const value_type &x)
+		{
+			ft::pair<iterator, iterator>	range;
+
+			range.first = this->lower_bound(x);
+			range.second = this->upper_bound(x);
+			return (range);
+		}
+
+		ft::pair<const_iterator, const_iterator>	equal_range(const value_type &x) const
+		{
+			ft::pair<const_iterator, const_iterator>	range;
+
+			range.first = this->lower_bound(x);
+			range.second = this->upper_bound(x);
+			return (range);
 		}
 
 

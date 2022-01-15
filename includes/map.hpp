@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 10:38:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/13 21:01:31 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/14 17:47:12 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ namespace ft
 		typedef typename ft::RedBlackTree<value_type>::const_iterator	const_iterator;
 		typedef typename Allocator::reference							reference;
 		typedef typename Allocator::const_reference						const_reference;
-		typedef	size_t													size_type;
-		typedef ptrdiff_t												difference_type;
+		typedef	std::size_t												size_type;
+		typedef std::ptrdiff_t											difference_type;
 		typedef typename Allocator::pointer								pointer;
 		typedef typename Allocator::const_pointer						const_pointer;
 		typedef ft::reverse_iterator<iterator>							reverse_iterator;
@@ -301,14 +301,14 @@ namespace ft
 			return (this->_tree.upper_bound(ft::make_pair(x, mapped_type())));
 		}
 
-		pair<iterator, iterator>	equal_range(const key_type &type)
+		ft::pair<iterator, iterator>	equal_range(const key_type &x)
 		{
-
+			return (this->_tree.equal_range(ft::make_pair(x, mapped_type())));
 		}
 
-		pair<const_iterator, const_iterator>	equal_range(const key_type &x) const
+		ft::pair<const_iterator, const_iterator>	equal_range(const key_type &x) const
 		{
-			
+			return (this->_tree.equal_range(ft::make_pair(x, mapped_type())));			
 		}
 	};
 
