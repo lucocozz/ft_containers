@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/19 22:11:17 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/12/26 23:31:50 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/16 17:11:41 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ namespace ft
 	{
 		for (; (first1 != last1) && (first2 != last2); ++first1, ++first2)
 		{
-		    if (cmp(first1, first2))
+		    if (cmp(*first1, *first2))
 				return (true);
-		    if (cmp(first2, first1))
+		    if (cmp(*first2, *first1))
 				return (false);
 		}
 		return ((first1 == last1) && (first2 != last2));

@@ -1,5 +1,6 @@
 NAME := ft_containers
-SRC := 	main.cpp			\
+SRC := 	main.cpp
+# SRC := vector_perf.cpp
 
 MAKE = make
 # MAKEFLAGS += --ignore-errors

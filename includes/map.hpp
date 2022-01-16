@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 10:38:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/14 17:47:12 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/16 19:26:29 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,10 +222,13 @@ namespace ft
 
 		void	erase(iterator first, iterator last)
 		{
+			iterator	it;
+
 			while (first != last)
 			{
-				this->_tree.erase(first);
-				first++;
+				it = first;
+				++first;
+				this->_tree.erase(it);
 			}
 		}
 
@@ -325,9 +328,7 @@ namespace ft
 	template<class Key, class T, class Compare, class Allocator>
 	bool	operator!=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
 	{
-		if (lhs == rhs)
-			return (false);
-		return (true);
+		return (!(lhs == rhs));
 	}
 
 	template<class Key, class T, class Compare, class Allocator>
@@ -339,7 +340,7 @@ namespace ft
 	template<class Key, class T, class Compare, class Allocator>
 	bool	operator<=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
 	{
-		return (!(rhs < lhs));
+		return (lhs == rhs || lhs < rhs);
 	}
 
 	template<class Key, class T, class Compare, class Allocator>
@@ -351,7 +352,7 @@ namespace ft
 	template<class Key, class T, class Compare, class Allocator>
 	bool	operator>=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
 	{
-		return (!(lhs < rhs));
+		return (lhs == rhs || rhs < lhs);
 	}
 
 

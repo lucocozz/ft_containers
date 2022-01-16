@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/14 20:05:03 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/16 17:55:52 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ namespace ft
 
 		~Node() {}
 
-		reference	operator=(const reference rhs)
+		reference	operator=(reference rhs)
 		{
 			if (this != &rhs)
 			{

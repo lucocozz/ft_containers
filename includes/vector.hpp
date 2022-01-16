@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 15:41:16 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/13 21:08:22 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/16 16:35:49 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -377,18 +377,20 @@ namespace ft
 		{
 			pointer		data = NULL;
 		
+			if (n == 0)
+				n = 1;
 			if (n > this->max_size())
 				throw (std::length_error("vector::reserve"));
 			if (n > this->capacity())
 			{
-				data = this->_alloc.allocate(n + 1);
+				data = this->_alloc.allocate(n);
 				if (this->_data != NULL)
 				{
 					for (size_type i = 0; i < this->size(); i++)
 						this->_alloc.construct(&data[i], this->_data[i]);
 					this->_alloc.deallocate(this->_data, this->capacity());
 				}
-				this->_capacity = n + 1;
+				this->_capacity = n;
 				this->_data = data;
 			}
 		}
@@ -481,7 +483,8 @@ namespace ft
 			iterator		oldEnd;
 			difference_type	index = position - this->begin();
 
-			this->reserve(this->size() + n);
+			while (this->size() + n >= this->capacity())
+				this->reserve(this->capacity() * 2);
 			oldEnd = this->end();
 			this->_size += n;
 			pos = iterator(&this->_data[index]);
@@ -501,7 +504,8 @@ namespace ft
 			difference_type	index = position - this->begin();
 			difference_type	size = ft::distance(first, last);
 		
-			this->reserve(this->size() + size);
+			while (this->size() + size >= this->capacity())
+				this->reserve(this->capacity() * 2);
 			oldEnd = this->end();
 			this->_size = this->size() + size;
 			pos = iterator(&this->_data[index]);
@@ -563,9 +567,7 @@ namespace ft
 	template<class T, class Alloc>
 	bool operator!=(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
 	{
-		if (lhs == rhs)
-			return (false);
-		return (true);
+		return (!(lhs == rhs));
 	}
 
 	template<class T, class Alloc>
@@ -577,7 +579,7 @@ namespace ft
 	template<class T, class Alloc>
 	bool operator<=(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
 	{
-		return (!(rhs < lhs));
+		return (lhs == rhs || lhs < rhs);
 	}
 
 	template<class T, class Alloc>
@@ -589,7 +591,7 @@ namespace ft
 	template<class T, class Alloc>
 	bool operator>=(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
 	{
-		return (!(lhs < rhs));
+		return (lhs == rhs || rhs < lhs);
 	}
 
 
