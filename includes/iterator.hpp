@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/22 19:46:54 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/14 19:52:39 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/18 16:16:53 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,10 @@ template <class Iter>
 
 		reverse_iterator	operator++(int)
 		{
-			return (reverse_iterator(this->_current.operator--(0)));
+			reverse_iterator	it = *this;
+
+			this->_current.operator--();
+			return (it);
 		}
 
 		reverse_iterator	&operator++()
@@ -158,7 +161,10 @@ template <class Iter>
 
 		reverse_iterator	operator--(int)
 		{
-			return (reverse_iterator(this->_current.operator++(0)));
+			reverse_iterator	it = *this;
+
+			this->_current.operator++();
+			return (it);
 		}
 
 		reverse_iterator	&operator--()

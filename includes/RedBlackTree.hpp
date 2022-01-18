@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/16 17:55:52 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/18 23:00:21 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,13 @@ namespace ft
 		}
 	};
 
-	template<class Tx, class Ty>
-	bool	operator==(const Node<Tx> &x, const Node<Ty> &y)
-	{
-		if (x.data == y.data)
-			return (true);
-		return (false);
-	}
+	// template<class Tx, class Ty>
+	// bool	operator==(const Node<Tx> &x, const Node<Ty> &y)
+	// {
+	// 	if (x.data == y.data)
+	// 		return (true);
+	// 	return (false);
+	// }
 
 
 
@@ -356,12 +356,12 @@ namespace ft
 			return (*this);
 		}
 
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
 		//*	iterators:
 		iterator	begin()
 		{
@@ -385,22 +385,22 @@ namespace ft
 
 		reverse_iterator	rbegin()
 		{
-			return (reverse_iterator(iterator(this->_maximum(this->root()), this->sentry())));
+			return (reverse_iterator(iterator(this->sentry(), this->sentry())));
 		}
 
 		const_reverse_iterator	rbegin() const
 		{
-			return (const_reverse_iterator(const_iterator(this->_maximum(this->root()), this->sentry())));
+			return (const_reverse_iterator(const_iterator(this->sentry(), this->sentry())));
 		}
 
 		reverse_iterator	rend()
 		{
-			return (reverse_iterator(iterator(this->sentry(), this->sentry())));
+			return (reverse_iterator(iterator(this->_minimum(this->root()), this->sentry())));
 		}
 
 		const_reverse_iterator	rend() const
 		{
-			return (const_reverse_iterator(const_iterator(this->sentry(), this->sentry())));
+			return (const_reverse_iterator(const_iterator(this->_minimum(this->root()), this->sentry())));
 		}
 
 
@@ -479,6 +479,13 @@ namespace ft
 				this->_erase(this->root());
 		}
 
+		void	swap(RedBlackTree &x)
+		{
+			std::swap(this->_root, x._root);
+			std::swap(this->_sentry, x._sentry);
+			std::swap(this->_size, x._size);
+		}
+
 
 
 
@@ -515,38 +522,34 @@ namespace ft
 
 		iterator	lower_bound(const value_type &x)
 		{
-			iterator	it = this->begin();
-
-			while (it != this->end() && this->_comp(x, it.current->data))
-				it++;
-			return (it);
+			for (iterator it = this->begin(); it != this->end(); it++)
+				if (!(this->_comp(it.current->data, x)))
+					return (it);
+			return (this->end());
 		}
 
 		const_iterator	 lower_bound(const value_type &x) const
 		{
-			const_iterator	it = this->begin();
-
-			while (it != this->end() && this->_comp(x, it.current->data))
-				it++;
-			return (it.current);
+			for (const_iterator it = this->begin(); it != this->end(); it++)
+				if (!(this->_comp(it.current->data, x)))
+					return (it);
+			return (this->end());
 		}
 
 		iterator	upper_bound(const value_type &x)
 		{
-			iterator	it = this->begin();
-
-			while (it != this->end() && !this->_comp(x, it.current->data))
-				it++;
-			return (it);
+			for (iterator it = this->begin(); it != this->end(); it++)
+				if (!(this->_comp(it.current->data, x)) && this->_comp(x, it.current->data))
+					return (it);
+			return (this->end());
 		}
 
 		const_iterator	upper_bound(const value_type &x) const
 		{
-			const_iterator	it = this->begin();
-
-			while (it != this->end() && !this->_comp(x, it.current->data))
-				it++;
-			return (it.current);
+			for (const_iterator it = this->begin(); it != this->end(); it++)
+				if (!(this->_comp(it.current->data, x)) && this->_comp(x, it.current->data))
+					return (it);
+			return (this->end());
 		}
 
 		ft::pair<iterator, iterator>	equal_range(const value_type &x)
@@ -1003,4 +1006,10 @@ namespace ft
 				this->_print(node->left, buffer, true, std::string(prefix).append(isTail ? "    " : "│   "));
 		}
 	};
+
+	template<class T, class Compare, class Allocator>
+	void	swap(const RedBlackTree<T, Compare, Allocator> &lhs, const RedBlackTree<T, Compare, Allocator> &rhs)
+	{
+		lhs.swap(rhs);
+	}
 } // namespace ft

@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 10:38:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/16 19:26:29 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/18 22:59:52 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,8 +234,7 @@ namespace ft
 
 		void	swap(map &x)
 		{
-			std::swap(this->_tree, x._tree);
-			std::swap(this->_comp, x._comp);
+			this->_tree.swap(x._tree);
 		}
 
 		void	clear()

@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/16 13:27:42 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/16 18:44:18 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/18 22:50:09 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #define TESTED_NAMESPACE ft
 
 #define T1 int
-#define T2 std::string
+#define T2 int
 typedef TESTED_NAMESPACE::pair<const T1, T2> T3;
 
 template<class T>
@@ -34,28 +34,24 @@ void	printMap(T &mp)
 int	main()
 {
 	std::list<T3> lst;
-	unsigned int lst_size = 10;
+
+	unsigned int lst_size = 7;
 	for (unsigned int i = 0; i < lst_size; ++i)
-		lst.push_back(T3(i, std::string((lst_size - i), i + 65)));
-	TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end());
+		lst.push_back(T3(i, i));
+	TESTED_NAMESPACE::map<T1, T2> foo(lst.begin(), lst.end());
 
-	mp.erase(++mp.begin());
+	lst.clear(); lst_size = 4;
+	for (unsigned int i = 0; i < lst_size; ++i)
+		lst.push_back(T3(i + 1, i + 1));
+	TESTED_NAMESPACE::map<T1, T2> bar(lst.begin(), lst.end());
 
-	mp.erase(mp.begin());
-	mp.erase(--mp.end());
+	TESTED_NAMESPACE::map<T1, T2>::const_iterator it_foo = foo.begin();
+	TESTED_NAMESPACE::map<T1, T2>::const_iterator it_bar = bar.begin();
 
-	mp.erase(mp.begin(), ++(++(++mp.begin())));
-	mp.erase(--(--(--mp.end())), --mp.end());
-	printMap(mp);
+	foo.swap(bar);
 
-	mp[10] = "Hello";
-	mp[11] = "Hi there";
-	mp.erase(--(--(--mp.end())), mp.end());
-
-	mp[12] = "ONE";
-	mp[13] = "TWO";
-	mp[14] = "THREE";
-	mp[15] = "FOUR";
-	mp.erase(mp.begin(), mp.end());
+	std::cout << "Iterator validity:" << std::endl;
+	std::cout << (it_foo == bar.begin()) << std::endl;
+	std::cout << (it_bar == foo.begin()) << std::endl;
 	return (0);
 }
