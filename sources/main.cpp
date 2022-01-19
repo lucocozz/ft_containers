@@ -5,33 +5,22 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/16 13:27:42 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/19 16:18:45 by lucocozz         ###   ########.fr       */
+/*   Created: 2022/01/19 17:49:36 by lucocozz          #+#    #+#             */
+/*   Updated: 2022/01/19 23:39:07 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stack>
 #include <vector>
 #include <map>
-#include "vector.hpp"
+#include "stack.hpp"
 #include "map.hpp"
-#include <list>
-
-#define TESTED_NAMESPACE ft
-
-#define T1 char
-#define T2 int
-typedef TESTED_NAMESPACE::pair<const T1, T2> T3;
-
-template<class T>
-void	printMap(T &mp)
-{
-	typename T::iterator	it;
-
-	for (it = mp.begin(); it != mp.end(); it++)
-		std::cout << it->second << std::endl;;
-}
+#include "vector.hpp"
 
 int	main()
 {
-	return (0);
+	std::stack<int> tmp;
+	std::stack<int> tmp2;
+
+	tmp == tmp2;
 }

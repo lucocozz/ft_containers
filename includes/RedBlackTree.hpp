@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/19 15:23:46 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/20 00:25:05 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ namespace ft
 			return (*this);
 		}
 
-		value_type	&operator*(void)
+		reference	operator*(void)
 		{
 			return (this->current->data);
 		}
