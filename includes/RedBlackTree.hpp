@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/18 23:00:21 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/19 15:23:46 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,6 @@ namespace ft
 		}
 	};
 
-	// template<class Tx, class Ty>
-	// bool	operator==(const Node<Tx> &x, const Node<Ty> &y)
-	// {
-	// 	if (x.data == y.data)
-	// 		return (true);
-	// 	return (false);
-	// }
 
 
 
