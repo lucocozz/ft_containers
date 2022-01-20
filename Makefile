@@ -1,7 +1,8 @@
 NAME := ft_containers
-SRC := 	main.cpp
+# SRC := 	main.cpp
 # SRC := vector_perf.cpp
 # SRC := map_perf.cpp
+SRC := main42.cpp
 
 MAKE = make
 # MAKEFLAGS += --ignore-errors
