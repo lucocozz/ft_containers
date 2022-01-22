@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/19 17:49:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/19 23:39:07 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/22 16:52:40 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,24 @@
 #include "stack.hpp"
 #include "map.hpp"
 #include "vector.hpp"
+#include <iterator>
+
+#define TESTED_TYPE int
 
 int	main()
 {
-	std::stack<int> tmp;
-	std::stack<int> tmp2;
+	ft::vector<TESTED_TYPE> vct(7);
 
-	tmp == tmp2;
+	for (unsigned long int i = 0; i < vct.size(); ++i)
+	{
+		vct.at(i) = (vct.size() - i) * 3;
+		std::cout << "vct.at(): " << vct.at(i) << " | ";
+		std::cout << "vct[]: " << vct[i] << std::endl;
+	}
+
+	ft::vector<TESTED_TYPE> const vct_c(vct);
+
+	std::cout << "front(): " << vct.front() << " " << vct_c.front() << std::endl;
+	std::cout << "back(): " << vct.back() << " " <<  vct_c.back() << std::endl;
+	return (0);
 }

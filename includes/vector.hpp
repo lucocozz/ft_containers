@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 15:41:16 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/16 16:35:49 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/22 17:07:19 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,13 @@ namespace ft
 	{
 	public:
 		typedef T								value_type;
-		typedef ptrdiff_t						difference_type;
+		typedef std::ptrdiff_t					difference_type;
 		typedef T*								pointer;
 		typedef T&								reference;
 		typedef ft::random_access_iterator_tag	iterator_category;
 
 		pointer			current;
 
-	public:
 		vector_iterator(): current(NULL) {}
 
 		vector_iterator(pointer ptr): current(ptr) {}
@@ -137,7 +136,8 @@ namespace ft
 			return (this->current + object.current);
 		}
 
-		operator vector_iterator<const T>() const {
+		operator vector_iterator<const T>() const 
+		{
 			return (vector_iterator<const T>(this->current));
 		}
 	};
@@ -377,8 +377,6 @@ namespace ft
 		{
 			pointer		data = NULL;
 		
-			if (n == 0)
-				n = 1;
 			if (n > this->max_size())
 				throw (std::length_error("vector::reserve"));
 			if (n > this->capacity())
@@ -460,7 +458,12 @@ namespace ft
 		void	push_back(const T &x)
 		{
 			if (this->size() == this->capacity())
-				this->reserve(this->capacity() * 2);
+			{
+				if (this->capacity() == 0)
+					this->reserve(1);
+				else
+					this->reserve(this->capacity() * 2);
+			}
 			this->insert(this->end(), x);
 		}
 
@@ -483,8 +486,7 @@ namespace ft
 			iterator		oldEnd;
 			difference_type	index = position - this->begin();
 
-			while (this->size() + n >= this->capacity())
-				this->reserve(this->capacity() * 2);
+			this->reserve(this->_newCapacity(this->size() + n));
 			oldEnd = this->end();
 			this->_size += n;
 			pos = iterator(&this->_data[index]);
@@ -504,8 +506,7 @@ namespace ft
 			difference_type	index = position - this->begin();
 			difference_type	size = ft::distance(first, last);
 		
-			while (this->size() + size >= this->capacity())
-				this->reserve(this->capacity() * 2);
+			this->reserve(this->_newCapacity(this->size() + size));
 			oldEnd = this->end();
 			this->_size = this->size() + size;
 			pos = iterator(&this->_data[index]);
@@ -547,6 +548,28 @@ namespace ft
 		void	clear()
 		{
 			erase(this->begin(), this->end());
+		}
+
+
+
+
+
+
+	private:
+
+		size_type	_newCapacity(size_type n)
+		{
+			size_type	newCapacity;
+
+			newCapacity = this->capacity();
+			while (n >= newCapacity)
+			{
+				if (newCapacity == 0)
+					newCapacity = 1;
+				else
+					newCapacity *= 2;
+			}
+			return (newCapacity);
 		}
 	};
 
