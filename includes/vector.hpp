@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 15:41:16 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/22 17:07:19 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/24 20:43:13 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -457,13 +457,6 @@ namespace ft
 		//* modifiers:
 		void	push_back(const T &x)
 		{
-			if (this->size() == this->capacity())
-			{
-				if (this->capacity() == 0)
-					this->reserve(1);
-				else
-					this->reserve(this->capacity() * 2);
-			}
 			this->insert(this->end(), x);
 		}
 
