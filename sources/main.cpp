@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/19 17:49:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/22 16:52:40 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/26 16:38:51 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,12 @@
 
 int	main()
 {
-	ft::vector<TESTED_TYPE> vct(7);
+	std::vector<TESTED_TYPE> vct;
+	std::map<TESTED_TYPE, TESTED_TYPE> mp;
 
-	for (unsigned long int i = 0; i < vct.size(); ++i)
-	{
-		vct.at(i) = (vct.size() - i) * 3;
-		std::cout << "vct.at(): " << vct.at(i) << " | ";
-		std::cout << "vct[]: " << vct[i] << std::endl;
-	}
-
-	ft::vector<TESTED_TYPE> const vct_c(vct);
-
-	std::cout << "front(): " << vct.front() << " " << vct_c.front() << std::endl;
-	std::cout << "back(): " << vct.back() << " " <<  vct_c.back() << std::endl;
+	vct.push_back(1);
+	vct.push_back(2);
+	vct.push_back(3);
+	mp.insert(vct.begin(), vct.end());
 	return (0);
 }

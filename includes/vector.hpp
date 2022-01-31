@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 15:41:16 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/24 20:43:13 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/31 17:29:41 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,13 @@ namespace ft
 		typedef T&								reference;
 		typedef ft::random_access_iterator_tag	iterator_category;
 
-		pointer			current;
+	private:
+		pointer			_current;
 
-		vector_iterator(): current(NULL) {}
+	public:
+		vector_iterator(): _current(NULL) {}
 
-		vector_iterator(pointer ptr): current(ptr) {}
+		vector_iterator(pointer ptr): _current(ptr) {}
 
 		vector_iterator(const vector_iterator<T> &copy)
 		{
@@ -50,39 +52,44 @@ namespace ft
 
 
 
+		pointer	base(void) const
+		{
+			return (this->_current);
+		}
+
 		vector_iterator<T>	&operator=(const vector_iterator<T> &copy)
 		{
 			if (this != &copy)
-				this->current = copy.current;
+				this->_current = copy._current;
 			return (*this);
 		}
 
 		reference	operator*(void) const
 		{
-			return (*this->current);
+			return (*this->_current);
 		}
 
 		pointer	operator->(void) const
 		{
-			return (this->current);
+			return (this->_current);
 		}
 
 		reference	operator[](int index)
 		{
-			return (this->current[index]);
+			return (this->_current[index]);
 		}
 
 		vector_iterator<T>	operator++(int)
 		{
 			vector_iterator<T>	tmp(*this);
 		
-			this->current++;
+			this->_current++;
 			return (tmp);
 		}
 
 		vector_iterator<T>	&operator++(void)
 		{
-			this->current++;
+			this->_current++;
 			return (*this);
 		}
 
@@ -90,55 +97,55 @@ namespace ft
 		{
 			vector_iterator<T>	tmp(*this);
 		
-			this->current--;
+			this->_current--;
 			return (tmp);
 		}
 
 		vector_iterator<T>	&operator--(void)
 		{
-			this->current--;
+			this->_current--;
 			return (*this);
 		}
 
 		vector_iterator<T>	&operator+=(difference_type value)
 		{
-			this->current += value;
+			this->_current += value;
 			return (*this);
 		}
 
 		vector_iterator<T>	operator+(difference_type value)
 		{
-			vector_iterator<T>	tmp(this->current + value);
+			vector_iterator<T>	tmp(this->_current + value);
 
 			return (tmp);
 		}
 
 		vector_iterator<T>	&operator-=(difference_type value)
 		{
-			this->current -= value;
+			this->_current -= value;
 			return (*this);
 		}
 
 		vector_iterator<T>	operator-(difference_type value)
 		{
-			vector_iterator<T>	tmp(this->current - value);
+			vector_iterator<T>	tmp(this->_current - value);
 		
 			return (tmp);
 		}
 
 		difference_type		operator-(const vector_iterator<T> &object) const
 		{
-			return (this->current - object.current);
+			return (this->_current - object._current);
 		}
 
 		difference_type		operator+(const vector_iterator<T> &object) const
 		{
-			return (this->current + object.current);
+			return (this->_current + object._current);
 		}
 
 		operator vector_iterator<const T>() const 
 		{
-			return (vector_iterator<const T>(this->current));
+			return (vector_iterator<const T>(this->_current));
 		}
 	};
 
@@ -148,7 +155,7 @@ namespace ft
 	template<class Tx, class Ty>
 	bool	operator==(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y)
 	{
-		if (x.current == y.current)
+		if (x.base() == y.base())
 			return (true);
 		return (false);
 	}
@@ -156,7 +163,7 @@ namespace ft
 	template<class Tx, class Ty>
 	bool	operator!=(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y)
 	{
-		if (x.current != y.current)
+		if (x.base() != y.base())
 			return (true);
 		return (false);
 	}
@@ -164,7 +171,7 @@ namespace ft
 	template<class Tx, class Ty>
 	bool	operator>=(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y)
 	{
-		if (x.current >= y.current)
+		if (x.base() >= y.base())
 			return (true);
 		return (false);
 	}
@@ -172,7 +179,7 @@ namespace ft
 	template<class Tx, class Ty>
 	bool	operator<=(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y)
 	{
-		if (x.current <= y.current)
+		if (x.base() <= y.base())
 			return (true);
 		return (false);
 	}
@@ -180,7 +187,7 @@ namespace ft
 	template<class Tx, class Ty>
 	bool	operator<(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y)
 	{
-		if (x.current < y.current)
+		if (x.base() < y.base())
 			return (true);
 		return (false);
 	}
@@ -188,7 +195,7 @@ namespace ft
 	template<class Tx, class Ty>
 	bool	operator>(const vector_iterator<Tx> &x, const vector_iterator<Ty> &y)
 	{
-		if (x.current > y.current)
+		if (x.base() > y.base())
 			return (true);
 		return (false);
 	}
@@ -487,7 +494,7 @@ namespace ft
 				for (int i = 0; this->end() - i != pos; i++)
 					this->_alloc.construct(&(*(this->end() - i - 1)), *(oldEnd - i - 1));
 			for (size_type i = 0; i < n; i++, pos++)
-				this->_alloc.construct(pos.current, x);
+				this->_alloc.construct(&(*pos), x);
 		}
 
 		template<class InputIterator>
@@ -507,7 +514,7 @@ namespace ft
 				for (int i = 0; this->end() - i != pos; i++)
 					this->_alloc.construct(&(*(this->end() - i - 1)), *(oldEnd - i - 1));
 			for (; first != last; first++, pos++)
-				this->_alloc.construct(pos.current, *first);
+				this->_alloc.construct(&(*pos), *first);
 		}
 
 		iterator	erase(iterator position)
@@ -523,9 +530,9 @@ namespace ft
 			if (first != last)
 			{
 				for (; last != this->end(); last++, it++)
-					this->_alloc.construct(it.current, *last);
+					this->_alloc.construct(&(*it), *last);
 				for (; it != this->end(); it++, size--)
-					this->_alloc.destroy(it.current);
+					this->_alloc.destroy(&(*it));
 				this->_size = size;
 			}
 			return (first);
@@ -630,11 +637,11 @@ namespace ft
 template<class T>
 ft::vector_iterator<T>	operator+(int value, const ft::vector_iterator<T> &object)
 {
-	return (object.current + value);	
+	return (object.base() + value);	
 }
 
 template<class T>
 ft::vector_iterator<T>	operator-(int value, const ft::vector_iterator<T> &object)
 {
-	return (object.current - value);	
+	return (object.base() - value);	
 }

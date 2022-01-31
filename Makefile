@@ -1,6 +1,6 @@
 NAME := ft_containers
-# SRC := 	main.cpp
-SRC := vector_perf.cpp
+SRC := 	main.cpp
+# SRC := vector_perf.cpp
 # SRC := map_perf.cpp
 # SRC := main42.cpp
 
