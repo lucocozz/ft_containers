@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 00:58:27 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/22 17:10:47 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/01/31 17:37:17 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,6 @@ namespace ft
 	};
 
     template <>
-    struct is_integral<long long> {
-		static const bool	value = true;
-	};
-
-    template <>
     struct is_integral<unsigned char> {
 		static const bool	value = true;
 	};
@@ -77,11 +72,6 @@ namespace ft
 
     template <>
     struct is_integral<unsigned long> {
-		static const bool	value = true;
-	};
-
-    template <>
-    struct is_integral<unsigned long long> {
 		static const bool	value = true;
 	};
 }
