@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 15:41:16 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/31 17:29:41 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/02/09 11:05:06 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ namespace ft
 		typedef std::ptrdiff_t					difference_type;
 		typedef T*								pointer;
 		typedef T&								reference;
-		typedef ft::random_access_iterator_tag	iterator_category;
+		typedef std::random_access_iterator_tag	iterator_category;
 
 	private:
 		pointer			_current;
@@ -504,7 +504,7 @@ namespace ft
 			iterator		pos;
 			iterator		oldEnd;
 			difference_type	index = position - this->begin();
-			difference_type	size = ft::distance(first, last);
+			difference_type	size = std::distance(first, last);
 		
 			this->reserve(this->_newCapacity(this->size() + size));
 			oldEnd = this->end();

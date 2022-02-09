@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 04:19:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/20 00:25:05 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/02/09 11:03:08 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ namespace ft
 		typedef std::ptrdiff_t					difference_type;
 		typedef value_type*						pointer;
 		typedef value_type&						reference;
-		typedef ft::bidirectional_iterator_tag	iterator_category;
+		typedef std::bidirectional_iterator_tag	iterator_category;
 
 
 		node_type		*current;

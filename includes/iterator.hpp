@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/22 19:46:54 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/01/18 16:16:53 by lucocozz         ###   ########.fr       */
+/*   Updated: 2022/02/09 11:04:29 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,6 @@
 
 namespace ft
 {
-	struct input_iterator_tag {};
-	
-	struct output_iterator_tag {};
-
-	struct forward_iterator_tag: public input_iterator_tag {};
-
-	struct bidirectional_iterator_tag: public forward_iterator_tag {};
-
-	struct random_access_iterator_tag: public bidirectional_iterator_tag {};
-
-
 	template <class Category, class T, class Distance = std::ptrdiff_t, class Pointer = T*, class Reference = T&>
 	struct iterator {
 		typedef T         value_type;
@@ -51,7 +40,7 @@ namespace ft
 	template<class T>
 	struct iterator_traits<T*>
 	{
-		typedef ft::random_access_iterator_tag	iterator_category;
+		typedef std::random_access_iterator_tag	iterator_category;
 		typedef T								value_type;
 		typedef std::ptrdiff_t					difference_type;
 		typedef T*								pointer;
@@ -61,25 +50,12 @@ namespace ft
 	template<class T>
 	struct iterator_traits<const T*>
 	{
-		typedef ft::random_access_iterator_tag	iterator_category;
+		typedef std::random_access_iterator_tag	iterator_category;
 		typedef T								value_type;
 		typedef std::ptrdiff_t					difference_type;
 		typedef const T*						pointer;
 		typedef const T&						reference;
 	};
-
-
-	template<class InputIt>
-	typename iterator_traits<InputIt>::difference_type distance(InputIt first, InputIt last)
-	{
-		typename iterator_traits<InputIt>::difference_type	dist;
-
-		dist = 0;
-		while (first != last)
-			first++, dist++;
-		return (dist);
-	}
-
 
 
 
